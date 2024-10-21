@@ -20,10 +20,10 @@ function GudangDashboard() {
   }, []);
 
   return (
-    <div className="container">
-      <h1>Dashboard Gudang</h1>
-      <AddStock inventories={inventories} setInventories={setInventories} /> {/* Pass data to AddStock */}
+    <div className="body">
+      
       <InvenTable inventories={inventories} /> {/* Pass data to InvenTable */}
+      <AddStock inventories={inventories} setInventories={setInventories} /> {/* Pass data to AddStock */}
     </div>
   );
 }

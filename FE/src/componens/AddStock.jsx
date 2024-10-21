@@ -48,7 +48,7 @@ function AddStock({ inventories, setInventories }) {
         value={selectedProduct}
         onChange={(e) => setSelectedProduct(e.target.value)}
       >
-        <option value="">--Pilih Produk--</option>
+        <option value="">--Produk--</option>
         {inventories.map((item) => (
           <option key={item.kode_produk} value={item.kode_produk}>
             {item.nama_produk}
@@ -66,7 +66,7 @@ function AddStock({ inventories, setInventories }) {
         placeholder="Masukkan jumlah"
       />
 
-      <button onClick={handleAddQuantity}>Tambah Quantity</button>
+      <button onClick={handleAddQuantity}>Tambah Stock</button>
     </div>
   );
 }

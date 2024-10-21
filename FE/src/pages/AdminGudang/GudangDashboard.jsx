@@ -1,11 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
-
+import InvenTable from '../../componens/InvenTabel';
 function GudangDashboard() {
   return (
     <div className="container">  
-      <p>Ini adalah contoh dashboard sederhana.</p>
-      <Link to="/login">Login</Link> 
+      <InvenTable />
     </div>
   );
 }

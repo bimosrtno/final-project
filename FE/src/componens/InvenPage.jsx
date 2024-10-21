@@ -1,9 +1,10 @@
+// InvenTable.jsx (atau bisa diganti namanya menjadi InventoryPage.jsx)
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import AddStock from '../../componens/AddStock'; // Pastikan path ini sesuai
-import InvenTable from '../../componens/InvenTabel'; // Pastikan path ini sesuai
+import AddStock from './AddStock'; // Import komponen AddStock
+import InvenTable from './InvenTabel'; // Mengganti nama komponen InvenTable menjadi InventoryTable
 
-function GudangDashboard() {
+function InventoryPage() {
   const [inventories, setInventories] = useState([]);
 
   useEffect(() => {
@@ -20,12 +21,11 @@ function GudangDashboard() {
   }, []);
 
   return (
-    <div className="container">
-      <h1>Dashboard Gudang</h1>
-      <AddStock inventories={inventories} setInventories={setInventories} /> {/* Pass data to AddStock */}
-      <InvenTable inventories={inventories} /> {/* Pass data to InvenTable */}
+    <div>
+      <AddStock inventories={inventories} setInventories={setInventories} />
+      <InvenTable inventories={inventories} />
     </div>
   );
 }
 
-export default GudangDashboard;
+export default InventoryPage;

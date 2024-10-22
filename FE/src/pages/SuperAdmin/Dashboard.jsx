@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AddProduct from '../../componens/AddProducts';
 import InvenTable from '../../componens/InvenTabel';
+import DeleteProduct from '../../componens/DeleteProduct'; // Import komponen DeleteProduct
 import axios from 'axios';
 
 function Dashboard() {
@@ -21,9 +22,10 @@ function Dashboard() {
   }, []); // Hanya dijalankan saat komponen pertama kali di-mount
 
   return (
-    <div className="container">
-      <AddProduct setInventories={setInventories} /> {/* Passing setInventories untuk update */}
+    <div className="body">
       <InvenTable inventories={inventories} /> {/* Passing inventories sebagai props */}
+      <AddProduct setInventories={setInventories} /> {/* Passing setInventories untuk update */}
+      <DeleteProduct setInventories={setInventories} /> {/* Komponen DeleteProduct */}
     </div>
   );
 }

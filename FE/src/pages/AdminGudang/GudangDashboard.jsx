@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AddStock from '../../componens/AddStock'; // Pastikan path ini sesuai
 import InvenTable from '../../componens/InvenTabel'; // Pastikan path ini sesuai
+import ShippingTable from '../../componens/ShippingTable';
 
 function GudangDashboard() {
   const [inventories, setInventories] = useState([]);
@@ -24,6 +25,7 @@ function GudangDashboard() {
       
       <InvenTable inventories={inventories} /> {/* Pass data to InvenTable */}
       <AddStock inventories={inventories} setInventories={setInventories} /> {/* Pass data to AddStock */}
+      <ShippingTable />
     </div>
   );
 }

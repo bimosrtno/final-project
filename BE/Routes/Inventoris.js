@@ -2,6 +2,34 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db'); // Import koneksi database
 
+// Helper function untuk mendapatkan produk berdasarkan kode_produk
+async function getProductByKode(kode_produk) {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM inventoris WHERE kode_produk = $1',
+      [kode_produk]
+    );
+    return result.rows[0];
+  } catch (err) {
+    console.error("Error getting product by kode_produk:", err.message);
+    throw err;
+  }
+}
+
+// Helper function untuk memperbarui quantity
+async function updateInventoryQuantity(kode_produk, quantityChange) {
+  try {
+    const result = await pool.query(
+      'UPDATE inventoris SET quantity = quantity + $1 WHERE kode_produk = $2 RETURNING *',
+      [quantityChange, kode_produk]
+    );
+    return result.rows[0];
+  } catch (err) {
+    console.error("Error updating inventory quantity:", err.message);
+    throw err;
+  }
+}
+
 // GET /api/inventoris - Mendapatkan semua data inventaris
 router.get('/', async (req, res) => {
   try {
@@ -25,17 +53,14 @@ router.patch('/:kode_produk', async (req, res) => {
   }
 
   try {
-    // Logika untuk memperbarui quantity di database
-    const result = await pool.query(
-      'UPDATE inventoris SET quantity = quantity + $1 WHERE kode_produk = $2 RETURNING *',
-      [quantity, kodeProduk]
-    );
+    // Menggunakan helper function untuk memperbarui quantity di database
+    const updatedProduct = await updateInventoryQuantity(kodeProduk, quantity);
 
-    if (result.rowCount === 0) {
+    if (!updatedProduct) {
       return res.status(404).json({ message: 'Produk tidak ditemukan' });
     }
 
-    res.status(200).json(result.rows[0]); // Mengembalikan produk yang telah diperbarui
+    res.status(200).json(updatedProduct); // Mengembalikan produk yang telah diperbarui
   } catch (error) {
     console.error('Error updating quantity:', error);
     res.status(500).json({ message: 'Internal Server Error', error: error.message });

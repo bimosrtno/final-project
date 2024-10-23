@@ -9,7 +9,8 @@ const CustomerTable = () => {
     const fetchCustomers = async () => {
       try {
         const response = await axios.get("http://localhost:5000/customers");
-        setCustomers(response.data);
+        const reversedData = response.data.reverse(); // Membalik urutan data agar yang terbaru di atas
+        setCustomers(reversedData);
       } catch (error) {
         console.error("Error fetching customer data:", error);
       }
@@ -24,11 +25,16 @@ const CustomerTable = () => {
         status: newStatus,
       })
       .then((response) => {
-        setCustomers(
-          customers.map((customer) =>
-            customer.Name === Name ? { ...customer, Status: newStatus } : customer
-          )
+        // Update status dan geser data yang diubah ke atas
+        const updatedCustomers = customers.map((customer) =>
+          customer.Name === Name ? { ...customer, Status: newStatus } : customer
         );
+        // Geser customer yang statusnya baru diubah ke posisi paling atas
+        const movedCustomer = updatedCustomers.find((c) => c.Name === Name);
+        const remainingCustomers = updatedCustomers.filter(
+          (c) => c.Name !== Name
+        );
+        setCustomers([movedCustomer, ...remainingCustomers]); // Letakkan yang diubah di atas
       })
       .catch((error) => console.error("Error updating status:", error));
   };

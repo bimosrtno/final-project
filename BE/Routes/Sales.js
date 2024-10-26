@@ -135,4 +135,16 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// Route GET untuk mendapatkan ID transaksi terakhir
+router.get('/last-transaction-id', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id_transaksi FROM sales ORDER BY id_transaksi DESC LIMIT 1');
+    const lastTransactionId = result.rows[0] ? result.rows[0].id_transaksi : 'TRS002';
+    res.json({ lastTransactionId });
+  } catch (error) {
+    console.error('Error fetching last transaction ID:', error);
+    res.status(500).json({ error: 'Gagal mengambil ID transaksi terakhir' });
+  }
+});
+
 module.exports = router;

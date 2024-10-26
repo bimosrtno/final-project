@@ -17,11 +17,9 @@ const SalesForm = () => {
   });
 
   const [namaProduks, setNamaProduks] = useState([]);
-  const [salesData, setSalesData] = useState([]);
   const [simulatedId, setSimulatedId] = useState("");
 
   useEffect(() => {
-    // Fetch produk data dari API
     const fetchNamaProduks = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/inventoris");
@@ -36,33 +34,24 @@ const SalesForm = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch sales data dari API untuk mendapatkan ID transaksi terakhir
-    const fetchSalesData = async () => {
+    const fetchLastTransactionId = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/sales");
+        const response = await fetch("http://localhost:5000/api/sales/last-transaction-id");
         const data = await response.json();
-        setSalesData(data);
+
+        // Generate ID baru
+        const lastId = data.lastTransactionId || "TRS002";
+        const newId = `TRS${(parseInt(lastId.replace("TRS", "")) + 1)
+          .toString()
+          .padStart(3, "0")}`;
+        setSimulatedId(newId);
       } catch (error) {
-        console.error("Error fetching sales data:", error);
+        console.error("Error fetching last transaction ID:", error);
       }
     };
 
-    fetchSalesData();
+    fetchLastTransactionId();
   }, []);
-
-  useEffect(() => {
-    // Generate ID baru berdasarkan ID transaksi terakhir
-    const generateNewId = () => {
-      if (salesData.length === 0) return "TRS003"; // Mulai dari TRS003 jika tidak ada data
-      const lastId = salesData[salesData.length - 1].id_transaksi;
-      const newId = `TRS${(parseInt(lastId.replace("TRS", "")) + 1)
-        .toString()
-        .padStart(3, "0")}`;
-      return newId;
-    };
-
-    setSimulatedId(generateNewId());
-  }, [salesData]);
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
@@ -166,6 +155,15 @@ const SalesForm = () => {
           ],
           total_transaksi: 0,
         });
+
+        // Fetch ID transaksi baru setelah submit
+        const lastTransactionResponse = await fetch("http://localhost:5000/api/sales/last-transaction-id");
+        const lastTransactionData = await lastTransactionResponse.json();
+        const lastId = lastTransactionData.lastTransactionId || "TRS002";
+        const newId = `TRS${(parseInt(lastId.replace("TRS", "")) + 1)
+          .toString()
+          .padStart(3, "0")}`;
+        setSimulatedId(newId);
       } else {
         const errorData = await response.json();
         alert(`Gagal menambahkan data sales: ${errorData.message}`);

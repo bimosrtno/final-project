@@ -11,8 +11,7 @@ const ShippingTable = () => {
           throw new Error(`Gagal mengambil data sales: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
-        // Reverse data pada saat pertama kali diambil
-        setSalesData(data.reverse()); 
+        setSalesData(data.reverse());
       } catch (error) {
         console.error('Error fetching sales data:', error);
         alert(error.message);
@@ -29,14 +28,13 @@ const ShippingTable = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: newStatus }), // Kirim status baru ke backend
+        body: JSON.stringify({ status: newStatus }),
       });
 
       if (!response.ok) {
         throw new Error(`Gagal mengupdate status: ${response.status} ${response.statusText}`);
       }
 
-      // Jika berhasil, update status tanpa mengubah urutan data
       setSalesData((prevSalesData) =>
         prevSalesData.map((sale) =>
           sale.id_transaksi === idTransaksi ? { ...sale, status: newStatus } : sale
@@ -50,7 +48,7 @@ const ShippingTable = () => {
 
   return (
     <div>
-      <h2>shipping table</h2>
+      <h2>Shipping Table</h2>
       <div style={{ overflowX: 'auto' }}>
         <table>
           <thead>
@@ -66,26 +64,40 @@ const ShippingTable = () => {
             </tr>
           </thead>
           <tbody>
-            {salesData.map((sale) => (
-              <tr key={sale.id_transaksi}>
-                <td>{sale.id_transaksi}</td>
-                <td>{sale.customer_name}</td>
-                <td>{sale.nama_produk}</td>
-                <td>{sale.phone}</td>
-                <td>{sale.address}</td>
-                <td>{sale.quantity}</td>
-                <td>{new Date(sale.date).toLocaleString()}</td>
-                <td>
-                  <select
-                    value={sale.status}
-                    onChange={(e) => updateStatus(sale.id_transaksi, e.target.value)}
-                  >
-                    <option value="proses">Proses</option>
-                    <option value="terkirim">Terkirim</option>
-                  </select>
-                </td>
-              </tr>
-            ))}
+            {salesData
+              .filter((sale) => sale.status !== 'Batal') // Memfilter data dengan status bukan "Batal"
+              .map((sale) => (
+                <tr key={sale.id_transaksi}>
+                  <td>{sale.id_transaksi}</td>
+                  <td>{sale.customer_name}</td>
+                  <td>
+                    {sale.nama_produk?.map((produk, index) => (
+                      <div key={index}>{produk}</div>
+                    ))}
+                  </td>
+                  <td>{sale.phone}</td>
+                  <td>{sale.address}</td>
+                  <td>
+                    {sale.quantity?.map((qty, index) => (
+                      <div key={index}>{qty}</div>
+                    ))}
+                  </td>
+                  <td>{new Date(sale.date).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                  <td>
+                    {sale.status === 'Batal' ? (
+                      <span>{sale.status}</span>
+                    ) : (
+                      <select
+                        value={sale.status}
+                        onChange={(e) => updateStatus(sale.id_transaksi, e.target.value)}
+                      >
+                        <option value="proses">Proses</option>
+                        <option value="terkirim">Terkirim</option>
+                      </select>
+                    )}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

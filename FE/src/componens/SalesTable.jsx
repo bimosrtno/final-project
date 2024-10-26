@@ -115,18 +115,20 @@ const SalesTable = () => {
                 <td>{sale.total_transaksi}</td>
                 <td>{new Date(sale.date).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
                 <td>
-                  <select
-                    value={sale.status}
-                    onChange={(e) => {
-                      const newStatus = e.target.value;
-                      updateStatus(sale.id_transaksi, newStatus);
-                    }}
-                    disabled={sale.status === "Terkirim"} // Nonaktifkan dropdown jika statusnya 'Terkirim'
-                  >
-                    <option value="Proses">Proses</option>
-                    <option value="Batal">Batal</option>
-                
-                  </select>
+                  {sale.status === "terkirim" ? (
+                    <span>{sale.status}</span> // Tampilkan status sebagai teks jika "Terkirim"
+                  ) : (
+                    <select
+                      value={sale.status}
+                      onChange={(e) => {
+                        const newStatus = e.target.value;
+                        updateStatus(sale.id_transaksi, newStatus);
+                      }}
+                    >
+                      <option value="Proses">Proses</option>
+                      <option value="Batal">Batal</option>
+                    </select>
+                  )}
                 </td>
               </tr>
             ))}

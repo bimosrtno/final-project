@@ -7,11 +7,9 @@ const SalesTable = () => {
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/sales");
+        const response = await fetch("http://localhost:5000/api/sales"); // Sesuaikan port backend jika perlu
         if (!response.ok) {
-          throw new Error(
-            `Gagal mengambil data sales: ${response.status} ${response.statusText}`
-          );
+          throw new Error(`Gagal mengambil data sales: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
         const reversedData = data.reverse(); // Membalik urutan data agar yang terbaru berada di atas
@@ -53,6 +51,11 @@ const SalesTable = () => {
     return waUrl;
   };
 
+  // Format array menjadi string yang dipisahkan dengan koma jika array, atau langsung tampilkan jika tidak
+  const formatArray = (array) => {
+    return Array.isArray(array) ? array.join(", ") : array;
+  };
+
   return (
     <div>
       <h2>Data Sales</h2>
@@ -76,15 +79,10 @@ const SalesTable = () => {
               <tr key={sale.id_transaksi}>
                 <td>{sale.id_transaksi}</td>
                 <td>{sale.customer_name}</td>
-                <td>{sale.nama_produk}</td>
+                <td>{formatArray(sale.nama_produk)}</td>
                 <td>
-                  {/* Hyperlink ke WhatsApp */}
                   <a
-                    href={createWhatsAppLink(
-                      sale.phone,
-                      sale.customer_name,
-                      sale.id_transaksi
-                    )}
+                    href={createWhatsAppLink(sale.phone, sale.customer_name, sale.id_transaksi)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -92,7 +90,7 @@ const SalesTable = () => {
                   </a>
                 </td>
                 <td>{sale.address}</td>
-                <td>{sale.quantity}</td>
+                <td>{formatArray(sale.quantity)}</td>
                 <td>{sale.total_transaksi}</td>
                 <td>{new Date(sale.date).toLocaleString()}</td>
                 <td>{sale.status}</td>
@@ -106,3 +104,5 @@ const SalesTable = () => {
 };
 
 export default SalesTable;
+
+

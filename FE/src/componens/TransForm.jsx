@@ -2,34 +2,33 @@ import React, { useState, useEffect } from "react";
 
 const SalesForm = () => {
   const [formData, setFormData] = useState({
-    nama_produk: "",
     customer_name: "",
     phone: "",
     address: "",
-    quantity: 1,
-    harga_jual: 0,
+    items: [
+      {
+        nama_produk: "",
+        quantity: 1,
+        harga_jual: 0,
+        total_harga: 0,
+      },
+    ],
     total_transaksi: 0,
   });
 
   const [namaProduks, setNamaProduks] = useState([]);
   const [salesData, setSalesData] = useState([]);
   const [simulatedId, setSimulatedId] = useState("");
-  const [isFormVisible, setIsFormVisible] = useState(false); // State untuk kontrol visibilitas form
 
   useEffect(() => {
+    // Fetch produk data dari API
     const fetchNamaProduks = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/inventoris");
-        if (!response.ok) {
-          throw new Error(
-            `Gagal mengambil daftar nama produk: ${response.status} ${response.statusText}`
-          );
-        }
         const data = await response.json();
         setNamaProduks(data);
       } catch (error) {
         console.error("Error fetching nama produks:", error);
-        alert(error.message);
       }
     };
 
@@ -37,19 +36,14 @@ const SalesForm = () => {
   }, []);
 
   useEffect(() => {
+    // Fetch sales data dari API untuk mendapatkan ID transaksi terakhir
     const fetchSalesData = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/sales");
-        if (!response.ok) {
-          throw new Error(
-            `Gagal mengambil data sales: ${response.status} ${response.statusText}`
-          );
-        }
         const data = await response.json();
         setSalesData(data);
       } catch (error) {
         console.error("Error fetching sales data:", error);
-        alert(error.message);
       }
     };
 
@@ -57,60 +51,93 @@ const SalesForm = () => {
   }, []);
 
   useEffect(() => {
+    // Generate ID baru berdasarkan ID transaksi terakhir
     const generateNewId = () => {
-      if (salesData.length === 0) {
-        return "TRS-004"; // Mulai dari TRS-004
-      }
-
+      if (salesData.length === 0) return "TRS003"; // Mulai dari TRS003 jika tidak ada data
       const lastId = salesData[salesData.length - 1].id_transaksi;
-      const lastIdNumber = parseInt(lastId.replace("TRS-", ""), 10);
-      const newIdNumber = lastIdNumber + 1;
-      const newId = `TRS-${newIdNumber.toString().padStart(3, "0")}`;
+      const newId = `TRS${(parseInt(lastId.replace("TRS", "")) + 1)
+        .toString()
+        .padStart(3, "0")}`;
       return newId;
     };
 
     setSimulatedId(generateNewId());
   }, [salesData]);
 
-  useEffect(() => {
-    const fetchProductData = async () => {
-      if (formData.nama_produk) {
-        try {
-          const selectedProduct = namaProduks.find(
-            (item) => item.nama_produk === formData.nama_produk
-          );
-          if (selectedProduct) {
-            setFormData((prevData) => ({
-              ...prevData,
-              harga_jual: selectedProduct.harga_jual,
-              total_transaksi: selectedProduct.harga_jual * prevData.quantity,
-            }));
-          } else {
-            throw new Error("Produk tidak ditemukan");
-          }
-        } catch (error) {
-          console.error("Error fetching product data:", error);
-          alert(error.message);
-        }
-      }
-    };
-
-    fetchProductData();
-  }, [formData.nama_produk, formData.quantity, namaProduks]);
-
-  const handleChange = (e) => {
+  const handleChange = (e, index) => {
     const { name, value } = e.target;
+
+    if (name === "nama_produk") {
+      const selectedProduct = namaProduks.find(
+        (product) => product.nama_produk === value
+      );
+      const updatedItems = formData.items.map((item, i) =>
+        i === index
+          ? {
+              ...item,
+              [name]: value,
+              harga_jual: selectedProduct.harga_jual,
+              total_harga: selectedProduct.harga_jual * item.quantity,
+            }
+          : item
+      );
+      setFormData((prevData) => ({
+        ...prevData,
+        items: updatedItems,
+      }));
+    } else if (name === "quantity") {
+      const updatedItems = formData.items.map((item, i) =>
+        i === index
+          ? { ...item, [name]: parseInt(value), total_harga: item.harga_jual * parseInt(value) }
+          : item
+      );
+      setFormData((prevData) => ({
+        ...prevData,
+        items: updatedItems,
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleAddProduct = () => {
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      items: [
+        ...prevData.items,
+        { nama_produk: "", quantity: 1, harga_jual: 0, total_harga: 0 },
+      ],
     }));
   };
+
+  const handleRemoveProduct = (index) => {
+    const updatedItems = formData.items.filter((_, i) => i !== index);
+    setFormData((prevData) => ({
+      ...prevData,
+      items: updatedItems,
+    }));
+  };
+
+  useEffect(() => {
+    // Hitung total transaksi setiap kali items berubah
+    const total = formData.items.reduce(
+      (acc, item) => acc + item.total_harga,
+      0
+    );
+    setFormData((prevData) => ({
+      ...prevData,
+      total_transaksi: total,
+    }));
+  }, [formData.items]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.nama_produk || !formData.customer_name || !formData.phone || !formData.address) {
-      alert('Semua field harus diisi!');
+    if (!formData.customer_name || !formData.phone || !formData.address) {
+      alert("Semua field harus diisi!");
       return;
     }
 
@@ -120,135 +147,111 @@ const SalesForm = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...formData, id_transaksi: simulatedId }),
+        body: JSON.stringify({
+          ...formData,
+          id_transaksi: simulatedId,
+        }),
       });
 
       if (response.ok) {
+        alert("Data sales berhasil ditambahkan!");
+
+        // Reset form data setelah submit
         setFormData({
-          nama_produk: "",
           customer_name: "",
           phone: "",
           address: "",
-          quantity: 1,
-          harga_jual: 0,
+          items: [
+            { nama_produk: "", quantity: 1, harga_jual: 0, total_harga: 0 },
+          ],
           total_transaksi: 0,
         });
-
-        const response = await fetch("http://localhost:5000/api/sales");
-        const data = await response.json();
-        setSalesData(data);
-
-        alert("Data sales berhasil ditambahkan!");
       } else {
         const errorData = await response.json();
         alert(`Gagal menambahkan data sales: ${errorData.message}`);
       }
     } catch (error) {
-      console.error("Error adding sales:", error);
-      alert("Terjadi kesalahan saat menambahkan data sales.");
+      console.error("Error submitting sales:", error);
+      alert("Terjadi kesalahan saat mengirim data.");
     }
   };
 
   return (
     <div>
-      {/* Button untuk menampilkan atau menyembunyikan form */}
-      <button onClick={() => setIsFormVisible(!isFormVisible)}>
-        {isFormVisible ? "Batal" : "Input Transaksi"}
-      </button>
+      <form onSubmit={handleSubmit}>
+        <h2>Form Penjualan</h2>
 
-      {/* Render form jika isFormVisible true */}
-      {isFormVisible && (
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="id_transaksi">ID Transaksi:</label>
-            <input
-              type="text"
-              id="id_transaksi"
-              name="id_transaksi"
-              value={simulatedId}
-              readOnly
-            />
-          </div>
-          <div>
-            <label htmlFor="nama_produk">Nama Produk:</label>
+        <label>ID Transaksi: {simulatedId}</label>
+
+        <label>Customer Name:</label>
+        <input
+          type="text"
+          name="customer_name"
+          value={formData.customer_name}
+          onChange={(e) => handleChange(e, -1)}
+        />
+
+        <label>Phone:</label>
+        <input
+          type="text"
+          name="phone"
+          value={formData.phone}
+          onChange={(e) => handleChange(e, -1)}
+        />
+
+        <label>Address:</label>
+        <input
+          type="text"
+          name="address"
+          value={formData.address}
+          onChange={(e) => handleChange(e, -1)}
+        />
+
+        {formData.items.map((item, index) => (
+          <div key={index}>
+            <label>Nama Produk:</label>
             <select
-              id="nama_produk"
               name="nama_produk"
-              value={formData.nama_produk}
-              onChange={handleChange}
+              value={item.nama_produk}
+              onChange={(e) => handleChange(e, index)}
             >
-              <option value="">Pilih Nama Produk</option>
-              {namaProduks.map((item) => (
-                <option key={item.nama_produk} value={item.nama_produk}>
-                  {item.nama_produk}
+              <option value="">Pilih produk</option>
+              {namaProduks.map((product) => (
+                <option key={product.kode_produk} value={product.nama_produk}>
+                  {product.nama_produk}
                 </option>
               ))}
             </select>
-          </div>
-          <div>
-            <label htmlFor="customer_name">Nama Customer:</label>
-            <input
-              type="text"
-              id="customer_name"
-              name="customer_name"
-              value={formData.customer_name}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="phone">No. HP:</label>
-            <input
-              type="text"
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="address">Alamat:</label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="quantity">Quantity:</label>
+
+            <label>Quantity:</label>
             <input
               type="number"
-              id="quantity"
               name="quantity"
-              value={formData.quantity}
-              onChange={handleChange}
+              value={item.quantity}
+              onChange={(e) => handleChange(e, index)}
               min="1"
             />
+
+            <label>Harga Jual: {item.harga_jual}</label>
+
+            <label>Total Harga: {item.total_harga}</label>
+
+            {index > 0 && (
+              <button type="button" onClick={() => handleRemoveProduct(index)}>
+                Hapus Produk
+              </button>
+            )}
           </div>
-          <div>
-            <label htmlFor="harga_jual">Harga Jual:</label>
-            <input
-              type="number"
-              id="harga_jual"
-              name="harga_jual"
-              value={formData.harga_jual}
-              readOnly
-            />
-          </div>
-          <div>
-            <label htmlFor="total_transaksi">Total Transaksi:</label>
-            <input
-              type="number"
-              id="total_transaksi"
-              name="total_transaksi"
-              value={formData.total_transaksi}
-              readOnly
-            />
-          </div>
-          <button type="submit">Submit</button>
-        </form>
-      )}
+        ))}
+
+        <button type="button" onClick={handleAddProduct}>
+          Tambah Produk
+        </button>
+
+        <h3>Total Transaksi: {formData.total_transaksi}</h3>
+
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
 };

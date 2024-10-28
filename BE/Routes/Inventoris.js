@@ -33,34 +33,52 @@ async function updateInventoryQuantity(kode_produk, quantityChange) {
 // GET /api/inventoris - Mendapatkan semua data inventaris
 router.get('/', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM inventoris ORDER BY kode_produk ASC'); // Menjaga urutan kode_produk
-    console.log("Hasil query:", result.rows); // Menampilkan hasil query di console
-    res.json(result.rows); // Mengirimkan data ke frontend
+    const result = await pool.query('SELECT * FROM inventoris ORDER BY kode_produk ASC');
+    res.json(result.rows);
   } catch (error) {
     console.error('Error fetching inventoris data:', error);
     res.status(500).json({ error: 'Failed to fetch inventoris data' });
   }
 });
 
+// DELETE /api/inventoris/:kode_produk - Menghapus produk berdasarkan kode_produk
+router.delete('/:kode_produk', async (req, res) => {
+  const kodeProduk = req.params.kode_produk;
+
+  try {
+    // Menggunakan helper function untuk mendapatkan produk
+    const product = await getProductByKode(kodeProduk);
+    
+    if (!product) {
+      return res.status(404).json({ message: 'Produk tidak ditemukan' });
+    }
+
+    // Menghapus produk dari database
+    await pool.query('DELETE FROM inventoris WHERE kode_produk = $1', [kodeProduk]);
+    res.status(200).json({ message: 'Produk berhasil dihapus' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ message: 'Terjadi kesalahan saat menghapus produk', error: error.message });
+  }
+});
+
 // PATCH /api/inventoris/:kode_produk - Memperbarui quantity produk
 router.patch('/:kode_produk', async (req, res) => {
-  const kodeProduk = req.params.kode_produk; // Mengambil kode_produk dari URL
-  const { quantity } = req.body; // Mengambil quantity dari body request
+  const kodeProduk = req.params.kode_produk;
+  const { quantity } = req.body;
 
-  // Memastikan quantity yang diterima adalah angka valid
   if (isNaN(quantity) || quantity <= 0) {
     return res.status(400).json({ message: 'Quantity tidak valid' });
   }
 
   try {
-    // Menggunakan helper function untuk memperbarui quantity di database
     const updatedProduct = await updateInventoryQuantity(kodeProduk, quantity);
 
     if (!updatedProduct) {
       return res.status(404).json({ message: 'Produk tidak ditemukan' });
     }
 
-    res.status(200).json(updatedProduct); // Mengembalikan produk yang telah diperbarui
+    res.status(200).json(updatedProduct);
   } catch (error) {
     console.error('Error updating quantity:', error);
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
@@ -71,19 +89,17 @@ router.patch('/:kode_produk', async (req, res) => {
 router.post('/', async (req, res) => {
   const { kode_produk, nama_produk, modal, harga_jual, quantity } = req.body;
 
-  // Validasi input
   if (!kode_produk || !nama_produk || isNaN(modal) || isNaN(harga_jual) || isNaN(quantity)) {
     return res.status(400).json({ message: 'Data produk tidak valid' });
   }
 
   try {
-    // Menambahkan produk baru ke database
     const result = await pool.query(
       'INSERT INTO inventoris (kode_produk, nama_produk, modal, harga_jual, quantity) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [kode_produk, nama_produk, modal, harga_jual, quantity]
     );
 
-    res.status(201).json(result.rows[0]); // Mengembalikan produk yang baru ditambahkan
+    res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('Error adding product:', error);
     res.status(500).json({ message: 'Internal Server Error', error: error.message });

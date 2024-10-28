@@ -7,18 +7,25 @@ function DeleteProduct({ setInventories }) {
   const [kodeProduk, setKodeProduk] = useState(''); // State untuk kode produk yang dipilih
   const [productList, setProductList] = useState([]); // State untuk menyimpan semua produk
 
-  // Fetch data inventori ketika komponen dimount
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/inventoris');
-        setProductList(response.data); // Menyimpan semua produk di state
-      } catch (error) {
-        console.error('Error fetching product list:', error);
-      }
-    };
+  // Fungsi untuk fetch data inventori
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/inventoris');
+      setProductList(response.data); // Menyimpan semua produk di state
+    } catch (error) {
+      console.error('Error fetching product list:', error);
+    }
+  };
 
-    fetchProducts();
+  // Fetch data inventori ketika komponen dimount dan secara berkala setiap 5 detik
+  useEffect(() => {
+    fetchProducts(); // Initial fetch saat mount
+
+    const intervalId = setInterval(() => {
+      fetchProducts(); // Refresh data setiap 5 detik
+    }, 5000);
+
+    return () => clearInterval(intervalId); // Bersihkan interval saat komponen unmount
   }, []);
 
   const handleDeleteProduct = async () => {
@@ -32,8 +39,10 @@ function DeleteProduct({ setInventories }) {
       await axios.delete(`http://localhost:5000/api/inventoris/${kodeProduk}`);
 
       // Fetch ulang data inventori setelah penghapusan
-      const response = await axios.get('http://localhost:5000/api/inventoris');
-      setInventories(response.data);
+      await fetchProducts(); // Panggil ulang fetchProducts untuk update produk terbaru
+
+      // Update parent state dengan data terbaru setelah penghapusan
+      setInventories((prevInventories) => prevInventories.filter(product => product.kode_produk !== kodeProduk));
 
       // Reset pilihan
       setKodeProduk('');
@@ -46,7 +55,6 @@ function DeleteProduct({ setInventories }) {
 
   return (
     <div>
-   
       <label htmlFor="kodeProduk">Kode Produk:</label>
       <select
         id="kodeProduk"

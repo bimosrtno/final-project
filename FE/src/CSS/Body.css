@@ -1,3 +1,4 @@
-.body { 
-    margin-top: 60px; /* Sesuaikan nilai ini dengan tinggi navbar */
-  }
+body {
+  background-color: white !important;
+  color: black !important;
+}

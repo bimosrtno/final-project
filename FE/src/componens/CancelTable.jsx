@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import '../CSS/table.css';
 
-const SalesTable = () => {
+const CancelTable = () => {
   const [salesData, setSalesData] = useState([]);
 
   useEffect(() => {
@@ -66,65 +66,56 @@ const SalesTable = () => {
     return waUrl;
   };
 
+  // Filter only sales with status "Batal"
+  const canceledSalesData = salesData.filter(sale => sale.status === "Batal");
+
   return (
     <div>
-      <h2>Sales Table</h2>
+      <h2>Sales Table (Batal)</h2>
       <div style={{ overflowX: "auto" }}>
-      <div className="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>ID Transaksi</th>
-              <th>Customer Name</th>
-              <th>Nama Produk</th>
-              <th>No. HP</th>
-              <th>Alamat</th>
-              <th>Quantity</th>
-              <th>Total Transaksi</th>
-              <th>Date</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {salesData.map((sale) => (
-              <tr key={sale.id_transaksi}>
-                <td>{sale.id_transaksi}</td>
-                <td>{sale.customer_name}</td>
-                <td>{sale.nama_produk.join(", ")}</td>
-                <td>
-                  <a 
-                    href={createWhatsAppLink(sale.phone, sale.customer_name, sale.id_transaksi)} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
-                    {sale.phone}
-                  </a>
-                </td>
-                <td>{sale.address}</td>
-                <td>{sale.quantity.join(", ")}</td>
-                <td>{sale.total_transaksi}</td>
-                <td>{new Date(sale.date).toLocaleDateString('id-ID')}</td>
-                <td>
-                  {sale.status === "terkirim" ? (
-                    <span>{sale.status}</span>
-                  ) : (
-                    <select
-                      value={sale.status}
-                      onChange={(e) => updateStatus(sale.id_transaksi, e.target.value)}
-                    >
-                      <option value="Proses">Proses</option>
-                      <option value="Batal">Batal</option>
-                    </select>
-                  )}
-                </td>
+        <div className="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID Transaksi</th>
+                <th>Customer Name</th>
+                <th>Nama Produk</th>
+                <th>No. HP</th>
+                <th>Alamat</th>
+                <th>Quantity</th>
+                <th>Total Transaksi</th>
+                <th>Date</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {canceledSalesData.map((sale) => (
+                <tr key={sale.id_transaksi}>
+                  <td>{sale.id_transaksi}</td>
+                  <td>{sale.customer_name}</td>
+                  <td>{sale.nama_produk.join(", ")}</td>
+                  <td>
+                    <a 
+                      href={createWhatsAppLink(sale.phone, sale.customer_name, sale.id_transaksi)} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      {sale.phone}
+                    </a>
+                  </td>
+                  <td>{sale.address}</td>
+                  <td>{sale.quantity.join(", ")}</td>
+                  <td>{sale.total_transaksi}</td>
+                  <td>{new Date(sale.date).toLocaleDateString('id-ID')}</td>
+                  <td>{sale.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
     </div>
   );
 };
 
-export default SalesTable;
+export default CancelTable;

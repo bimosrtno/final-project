@@ -1,19 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
+import '../CSS/Sidebar.css'; // Pastikan untuk mengimpor file CSS
 
-function Navbar() {
+const Sidebar = () => {
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
   return (
-    <nav className="navbar">
-      <div className="container">
-        <a href="/" className="logo">Logo</a>
-        <ul className="nav-links">
-          <li><a href="/">Beranda</a></li>
-          <li><a href="/tentang">Tentang</a></li>
-          <li><a href="/layanan">Layanan</a></li>
-          <li><a href="/kontak">Kontak</a></li>
-        </ul>
-      </div>
-    </nav>
+    <div className="sidebar">
+      <h2>Menu</h2>
+      <ul>
+        <li>Performance</li>
+        <li>
+          <div onClick={toggleDropdown} className="dropdown-toggle">
+            Database
+          </div>
+          {isDropdownOpen && (
+            <ul className="dropdown-menu">
+              <li>Inventoris</li>
+              <li>Sales</li>
+            </ul>
+          )}
+        </li>
+        <li>Admin List</li>
+      </ul>
+    </div>
   );
-}
+};
 
-export default Navbar;
+export default Sidebar;

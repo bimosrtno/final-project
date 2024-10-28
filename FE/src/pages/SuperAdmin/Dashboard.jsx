@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import AddProduct from '../../componens/AddProducts';
 import InvenTable from '../../componens/InvenTabel';
 import DeleteProduct from '../../componens/DeleteProduct'; // Import komponen DeleteProduct
+import CancelTable from '../../componens/CancelTable';
+import Sidebar from '../../componens/SideBar';
 import axios from 'axios';
 
 function Dashboard() {
@@ -23,9 +25,11 @@ function Dashboard() {
 
   return (
     <div className="body">
+      
       <InvenTable inventories={inventories} /> {/* Passing inventories sebagai props */}
       <AddProduct setInventories={setInventories} /> {/* Passing setInventories untuk update */}
       <DeleteProduct setInventories={setInventories} /> {/* Komponen DeleteProduct */}
+      <CancelTable/>
     </div>
   );
 }

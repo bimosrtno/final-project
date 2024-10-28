@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../CSS/CustomerTable.css"; // Impor file CSS
+import "../CSS/table.css"; // Impor file CSS
 
 const CustomerTable = () => {
   const [customers, setCustomers] = useState([]);
@@ -55,6 +55,8 @@ const CustomerTable = () => {
 
   return (
     <table>
+         <div style={{ overflowX: "auto" }}></div>
+      <div className="table-wrapper"></div>
       <thead>
         <tr>
           <th>Name</th>

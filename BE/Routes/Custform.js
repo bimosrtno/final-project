@@ -2,6 +2,22 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db'); // Koneksi ke database PostgreSQL
 
+// Fungsi untuk menghasilkan ID customer baru
+async function generateCustomerID() {
+    const lastIdQuery = await pool.query('SELECT id_customer FROM customers ORDER BY id_customer DESC LIMIT 1');
+    const lastId = lastIdQuery.rows[0] ? lastIdQuery.rows[0].id_customer : null;
+
+    if (lastId) {
+        // Ambil nomor dari ID terakhir dan tambahkan 1
+        const lastNumber = parseInt(lastId.replace('CUST', ''), 10);
+        const newNumber = lastNumber + 1;
+        return `CUST${newNumber.toString().padStart(3, '0')}`;
+    } else {
+        // Jika belum ada ID, mulai dari CUST008
+        return 'CUST008';
+    }
+}
+
 // Endpoint untuk mendapatkan semua customers
 router.get('/', async (req, res) => {
     try {
@@ -15,14 +31,17 @@ router.get('/', async (req, res) => {
 
 // Endpoint untuk menyimpan data customer baru
 router.post('/', async (req, res) => {
-    const { Name, Phone, Email, Company, City, Status } = req.body; // Tambahkan Status di sini
+    const { Name, Phone, Email, Company, City, Status } = req.body;
 
     try {
-        const query = 'INSERT INTO customers("Name", "Phone", "Email", "Company", "City", "Status") VALUES($1, $2, $3, $4, $5, $6) RETURNING *';
-        const values = [Name, Phone, Email, Company, City, Status]; // Sertakan Status di array values
+        // Dapatkan ID customer baru
+        const newCustomerID = await generateCustomerID();
+
+        const query = 'INSERT INTO customers(id_customer, "Name", "Phone", "Email", "Company", "City", "Status") VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+        const values = [newCustomerID, Name, Phone, Email, Company, City, Status];
         const result = await pool.query(query, values);
 
-        res.status(201).send(result.rows[0]); 
+        res.status(201).send(result.rows[0]);
     } catch (err) {
         console.error("Error saving data:", err);
         res.status(500).send('Error saving data');

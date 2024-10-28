@@ -85,7 +85,7 @@ const CustomerTable = () => {
             <td>{customer.City}</td>
             <td>
               <select
-                value={customer.Status || "active"}
+                value={customer.Status || "potensial"}
                 onChange={(e) =>
                   handleStatusChange(customer.Name, e.target.value)
                 }

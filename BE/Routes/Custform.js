@@ -18,10 +18,13 @@ async function generateCustomerID() {
     }
 }
 
-// Endpoint untuk mendapatkan semua customers
+// Endpoint untuk mendapatkan semua customers dengan urutan yang dapat diatur
 router.get('/', async (req, res) => {
+    const order = req.query.order === 'desc' ? 'DESC' : 'ASC'; // Default ke ascending jika tidak ada query
+
     try {
-        const customers = await pool.query('SELECT * FROM customers');
+        // Mengambil data dengan pengurutan berdasarkan created_at atau id_customer
+        const customers = await pool.query(`SELECT * FROM customers ORDER BY id_customer ${order}`);
         res.json(customers.rows);
     } catch (err) {
         console.error(err.message);
@@ -31,14 +34,18 @@ router.get('/', async (req, res) => {
 
 // Endpoint untuk menyimpan data customer baru
 router.post('/', async (req, res) => {
-    const { Name, Phone, Email, Company, City, Status } = req.body;
+    const { Name, Phone, Email, Company, City, Status, source } = req.body;
 
     try {
         // Dapatkan ID customer baru
         const newCustomerID = await generateCustomerID();
 
-        const query = 'INSERT INTO customers(id_customer, "Name", "Phone", "Email", "Company", "City", "Status") VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *';
-        const values = [newCustomerID, Name, Phone, Email, Company, City, Status];
+        const query = `
+            INSERT INTO customers(id_customer, "Name", "Phone", "Email", "Company", "City", "Status", source) 
+            VALUES($1, $2, $3, $4, $5, $6, $7, $8) 
+            RETURNING *
+        `;
+        const values = [newCustomerID, Name, Phone, Email, Company, City, 'potensial', source];
         const result = await pool.query(query, values);
 
         res.status(201).send(result.rows[0]);
@@ -50,7 +57,7 @@ router.post('/', async (req, res) => {
 
 // Endpoint untuk memperbarui status customer berdasarkan nama
 router.put('/:Name/status', async (req, res) => {
-    const { Name } = req.params; 
+    const { Name } = req.params;
     const { status } = req.body;
 
     try {

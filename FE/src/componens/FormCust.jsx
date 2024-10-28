@@ -7,7 +7,8 @@ function FormCust() {
     Phone: '',
     Email: '',
     Company: '',
-    City: ''
+    City: '',
+    source: 'public'
   });
 
   const [responseMessage, setResponseMessage] = useState('');
@@ -36,7 +37,8 @@ function FormCust() {
           Phone: '',
           Email: '',
           Company: '',
-          City: ''
+          City: '',
+          source: 'public'
         });
       })
       .catch((error) => {

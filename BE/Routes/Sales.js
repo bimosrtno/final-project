@@ -15,7 +15,7 @@ async function getLastTransactionId() {
 
 // Route POST untuk menambahkan sales baru
 router.post('/', async (req, res) => {
-  const { items, customer_name, phone, address, total_transaksi } = req.body;
+  const { items, customer_name, phone, address, total_transaksi, id_customer } = req.body;
 
   // Validasi data yang diterima
   if (!items || !customer_name || !phone || !address || !Array.isArray(items) || items.length === 0 || isNaN(total_transaksi)) {
@@ -66,8 +66,8 @@ router.post('/', async (req, res) => {
     // Insert ke tabel sales
     const totalQuantity = quantities.reduce((sum, quantity) => sum + quantity, 0); // Menghitung total quantity
     const salesInsertQuery = `
-      INSERT INTO sales (id_transaksi, customer_name, phone, address, nama_produk, quantity, total_transaksi, date, status)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *
+      INSERT INTO sales (id_transaksi, customer_name, phone, address, nama_produk, quantity, total_transaksi, date, status, id_customer)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *
     `;
     
     const salesResult = await client.query(salesInsertQuery, [
@@ -79,7 +79,9 @@ router.post('/', async (req, res) => {
       `{${quantities.join(',')}}`, // Memastikan menggunakan format array literal untuk quantity
       total_transaksi,
       new Date(), // Tanggal saat ini
-      'proses' // Status transaksi
+      'proses', // Status transaksi
+      id_customer
+
     ]);
 
     await client.query('COMMIT'); // Commit transaction
@@ -144,6 +146,17 @@ router.get('/last-transaction-id', async (req, res) => {
   } catch (error) {
     console.error('Error fetching last transaction ID:', error);
     res.status(500).json({ error: 'Gagal mengambil ID transaksi terakhir' });
+  }
+});
+
+// Route GET untuk mengambil data customers
+router.get('/customers', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id_customer, "Name", "Phone" FROM customers');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching customers data:', error);
+    res.status(500).json({ error: 'Gagal mengambil data customers', details: error.message });
   }
 });
 

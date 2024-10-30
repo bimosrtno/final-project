@@ -1,4 +1,6 @@
 body {
   background-color: white !important;
   color: black !important;
+  margin: 0; /* Menghilangkan margin agar tidak ada masalah dengan padding */
+  padding-top: 4rem; /* Memberikan ruang di atas untuk navbar */
 }

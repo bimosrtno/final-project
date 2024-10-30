@@ -66,8 +66,8 @@ const CancelTable = () => {
     return waUrl;
   };
 
-  // Filter only sales with status "Batal"
-  const canceledSalesData = salesData.filter(sale => sale.status === "Batal");
+  // Filter only sales with status "batal"
+  const canceledSalesData = salesData.filter(sale => sale.status === "batal");
 
   return (
     <div>
@@ -86,6 +86,7 @@ const CancelTable = () => {
                 <th>Total Transaksi</th>
                 <th>Date</th>
                 <th>Status</th>
+                <th>note</th>
               </tr>
             </thead>
             <tbody>
@@ -108,6 +109,7 @@ const CancelTable = () => {
                   <td>{sale.total_transaksi}</td>
                   <td>{new Date(sale.date).toLocaleDateString('id-ID')}</td>
                   <td>{sale.status}</td>
+                  <td>{sale.note}</td>
                 </tr>
               ))}
             </tbody>

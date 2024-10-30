@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import '../CSS/Modal.css'; // Import CSS untuk styling
 
-const SalesForm = () => {
+const SalesForm = ({ onClose }) => {
   const [formData, setFormData] = useState({
     customer_name: "",
     phone: "",
@@ -71,6 +71,14 @@ const SalesForm = () => {
     }
   };
 
+  const calculateTotal = (items) => {
+    let total = 0;
+    items.forEach(item => {
+      total += item.total_harga;
+    });
+    return total;
+  };
+
   const handleChange = (e, index) => {
     const { name, value } = e.target;
     const updatedItems = [...formData.items];
@@ -88,11 +96,18 @@ const SalesForm = () => {
     } else if (name === "quantity") {
       updatedItems[index].quantity = parseInt(value) || 1;
       updatedItems[index].total_harga = updatedItems[index].harga_jual * updatedItems[index].quantity;
+    } else if (name === "address") {
+      setFormData(prevData => ({
+        ...prevData,
+        address: value,
+      }));
+      return; // Keluar dari fungsi setelah mengupdate address
     }
 
     setFormData(prevData => ({
       ...prevData,
       items: updatedItems,
+      total_transaksi: calculateTotal(updatedItems), // Update total transaksi
     }));
   };
 
@@ -111,6 +126,7 @@ const SalesForm = () => {
     setFormData(prevData => ({
       ...prevData,
       items: updatedItems,
+      total_transaksi: calculateTotal(updatedItems), // Update total transaksi
     }));
   };
 
@@ -146,6 +162,7 @@ const SalesForm = () => {
           ],
           total_transaksi: 0,
         });
+        onClose(); // Menutup modal setelah submit
       } else {
         const errorData = await response.json();
         alert(`Gagal menambahkan data sales: ${errorData.message}`);
@@ -229,6 +246,7 @@ const SalesForm = () => {
         </button>
         <h3>Total Transaksi: Rp {formData.total_transaksi}</h3>
         <button type="submit">Submit</button>
+        <button type="button" onClick={onClose}>Cancel</button> {/* Tombol Cancel untuk menutup modal */}
       </form>
     </div>
   );

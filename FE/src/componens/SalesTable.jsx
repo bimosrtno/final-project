@@ -3,6 +3,8 @@ import '../CSS/table.css';
 
 const SalesTable = () => {
   const [salesData, setSalesData] = useState([]);
+  const [note, setNote] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchSalesData = async () => {
@@ -30,99 +32,87 @@ const SalesTable = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const updateStatus = async (idTransaksi, newStatus) => {
-    if (newStatus === "Terkirim") return;
+  const updateStatusToCancel = async (idTransaksi) => {
+    if (!note) {
+      alert("Catatan harus diisi!");
+      return;
+    }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/sales/${idTransaksi}`, {
+      const response = await fetch(`http://localhost:5000/api/sales/cancel/${idTransaksi}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ note }),
       });
 
       if (!response.ok) {
-        throw new Error(`Gagal mengupdate status: ${response.status} ${response.statusText}`);
+        throw new Error(`Gagal membatalkan transaksi: ${response.status} ${response.statusText}`);
       }
 
-      // Update the salesData without changing the order
+      const updatedSale = await response.json();
       setSalesData((prevSalesData) =>
         prevSalesData.map((sale) =>
-          sale.id_transaksi === idTransaksi ? { ...sale, status: newStatus } : sale
+          sale.id_transaksi === updatedSale.id_transaksi ? { ...sale, status: 'batal', note: updatedSale.note } : sale
         )
       );
+
+      setNote(''); // Clear note input
+      setMessage('Transaksi berhasil dibatalkan');
     } catch (error) {
       console.error('Error updating status:', error);
       alert(error.message);
     }
   };
 
-  const createWhatsAppLink = (phone, customerName, idTransaksi) => {
-    // Hapus tanda dan spasi dari nomor telepon
-    const cleanedPhone = phone.replace(/[^0-9]/g, "");
-    // Format URL WhatsApp
-    const waUrl = `https://wa.me/62${cleanedPhone.slice(1)}?text=Halo%20${encodeURIComponent(customerName)},%20berikut%20adalah%20ID%20transaksinya%20ya%20${encodeURIComponent(idTransaksi)}.%20Silahkan%20pergi%20ke%20landing%20page%20kami%20untuk%20tracking%20pesanannya.%20Terimakasih.`;
-    return waUrl;
-  };
-
   return (
     <div>
       <h2>Sales Table</h2>
+      {message && <p>{message}</p>}
       <div style={{ overflowX: "auto" }}>
-      <div className="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>ID Transaksi</th>
-              <th>Customer Name</th>
-              <th>Nama Produk</th>
-              <th>No. HP</th>
-              <th>Alamat</th>
-              <th>Quantity</th>
-              <th>Total Transaksi</th>
-              <th>Date</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {salesData.map((sale) => (
-              <tr key={sale.id_transaksi}>
-                <td>{sale.id_transaksi}</td>
-                <td>{sale.customer_name}</td>
-                <td>{sale.nama_produk.join(", ")}</td>
-                <td>
-                  <a 
-                    href={createWhatsAppLink(sale.phone, sale.customer_name, sale.id_transaksi)} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
-                    {sale.phone}
-                  </a>
-                </td>
-                <td>{sale.address}</td>
-                <td>{sale.quantity.join(", ")}</td>
-                <td>{sale.total_transaksi}</td>
-                <td>{new Date(sale.date).toLocaleDateString('id-ID')}</td>
-                <td>
-                  {sale.status === "terkirim" ? (
-                    <span>{sale.status}</span>
-                  ) : (
-                    <select
-                      value={sale.status}
-                      onChange={(e) => updateStatus(sale.id_transaksi, e.target.value)}
-                    >
-                      <option value="Proses">Proses</option>
-                      <option value="Batal">Batal</option>
-                    </select>
-                  )}
-                </td>
+        <div className="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID Transaksi</th>
+                <th>Customer Name</th>
+                <th>Nama Produk</th>
+                <th>No. HP</th>
+                <th>Alamat</th>
+                <th>Quantity</th>
+                <th>Total Transaksi</th>
+                <th>Date</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {salesData.map((sale) => (
+                <tr key={sale.id_transaksi}>
+                  <td>{sale.id_transaksi}</td>
+                  <td>{sale.customer_name}</td>
+                  <td>{sale.nama_produk.join(", ")}</td>
+                  <td>
+                    <a
+                      href={`https://wa.me/62${sale.phone.replace(/[^0-9]/g, "")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {sale.phone}
+                    </a>
+                  </td>
+                  <td>{sale.address}</td>
+                  <td>{sale.quantity.join(", ")}</td>
+                  <td>{sale.total_transaksi}</td>
+                  <td>{new Date(sale.date).toLocaleDateString('id-ID')}</td>
+                  <td>{sale.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+      
     </div>
   );
 };

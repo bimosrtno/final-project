@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function NavbarSales() {
+function NavbarInven() {
     return (
         <nav className="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 fixed top-0 left-0 w-full z-100">
             <div className="max-w-screen-xl mx-auto flex justify-between items-center p-4">
@@ -9,13 +9,13 @@ function NavbarSales() {
 
                 <ul className="flex space-x-4"> {/* Gunakan flex untuk menampilkan tombol secara horizontal */}
                     <li>
-                        <Link to="/admin-sales/customerlist" className="block py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600">
-                            Customer List
+                        <Link to="/admin-gudang" className="block py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Inventori
                         </Link>
                     </li>
                     <li>
-                        <Link to="/admin-sales" className="block py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600">
-                            Sales Table
+                        <Link to="/admin-gudang/Shipping" className="block py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Shipping
                         </Link>
                     </li>
                     <li>
@@ -29,4 +29,4 @@ function NavbarSales() {
     );
 }
 
-export default NavbarSales;
+export default NavbarInven;

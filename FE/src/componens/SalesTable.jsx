@@ -5,6 +5,8 @@ const SalesTable = () => {
   const [salesData, setSalesData] = useState([]);
   const [note, setNote] = useState('');
   const [message, setMessage] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
 
   useEffect(() => {
     const fetchSalesData = async () => {
@@ -17,7 +19,7 @@ const SalesTable = () => {
         const sortedData = data.sort((a, b) => {
           const aId = parseInt(a.id_transaksi.replace('TRS', ''));
           const bId = parseInt(b.id_transaksi.replace('TRS', ''));
-          return bId - aId; // Sort descending
+          return bId - aId;
         });
         setSalesData(sortedData);
       } catch (error) {
@@ -27,7 +29,6 @@ const SalesTable = () => {
     };
 
     fetchSalesData();
-
     const intervalId = setInterval(fetchSalesData, 5000);
     return () => clearInterval(intervalId);
   }, []);
@@ -58,7 +59,7 @@ const SalesTable = () => {
         )
       );
 
-      setNote(''); // Clear note input
+      setNote('');
       setMessage('Transaksi berhasil dibatalkan');
     } catch (error) {
       console.error('Error updating status:', error);
@@ -66,53 +67,91 @@ const SalesTable = () => {
     }
   };
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = salesData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(salesData.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div>
-      <h2>Sales Table</h2>
       {message && <p>{message}</p>}
-      <div style={{ overflowX: "auto" }}>
-        <div className="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>ID Transaksi</th>
-                <th>Customer Name</th>
-                <th>Nama Produk</th>
-                <th>No. HP</th>
-                <th>Alamat</th>
-                <th>Quantity</th>
-                <th>Total Transaksi</th>
-                <th>Date</th>
-                <th>Status</th>
+      <div className="relative overflow-x-auto">
+        <table className="table-auto w-full text-left text-sm text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="w-1/8 px-2 py-1">ID Transaksi</th>
+              <th scope="col" className="w-1/8 px-2 py-1">Customer Name</th>
+              <th scope="col" className="w-1/8 px-2 py-1">Nama Produk</th>
+              <th scope="col" className="w-1/8 px-2 py-1">No. HP</th>
+              <th scope="col" className="w-1/8 px-2 py-1">Alamat</th>
+              <th scope="col" className="w-1/8 px-2 py-1">Quantity</th>
+              <th scope="col" className="w-1/8 px-2 py-1">Total</th>
+              <th scope="col" className="w-1/8 px-2 py-1">Date</th>
+              <th scope="col" className="w-1/8 px-2 py-1">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentItems.map((sale) => (
+              <tr key={sale.id_transaksi} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-2 py-3">{sale.id_transaksi}</td>
+                <td className="px-2 py-3">{sale.customer_name}</td>
+                <td className="px-2 py-3">{sale.nama_produk.join(", ")}</td>
+                <td className="px-2 py-3">
+                  <a
+                    href={`https://wa.me/62${sale.phone.replace(/[^0-9]/g, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {sale.phone}
+                  </a>
+                </td>
+                <td className="px-2 py-3">{sale.address}</td>
+                <td className="px-2 py-3">{sale.quantity.join(", ")}</td>
+                <td className="px-2 py-3">{sale.total_transaksi}</td>
+                <td className="px-2 py-3">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
+                <td className="px-2 py-3">{sale.status}</td>
               </tr>
-            </thead>
-            <tbody>
-              {salesData.map((sale) => (
-                <tr key={sale.id_transaksi}>
-                  <td>{sale.id_transaksi}</td>
-                  <td>{sale.customer_name}</td>
-                  <td>{sale.nama_produk.join(", ")}</td>
-                  <td>
-                    <a
-                      href={`https://wa.me/62${sale.phone.replace(/[^0-9]/g, "")}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {sale.phone}
-                    </a>
-                  </td>
-                  <td>{sale.address}</td>
-                  <td>{sale.quantity.join(", ")}</td>
-                  <td>{sale.total_transaksi}</td>
-                  <td>{new Date(sale.date).toLocaleDateString('id-ID')}</td>
-                  <td>{sale.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
-      
+
+      <nav aria-label="Page navigation example">
+        <ul className="inline-flex -space-x-px text-sm">
+          <li>
+            <a 
+              onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : 1)} 
+              className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
+              style={{ cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+            >
+              Previous
+            </a>
+          </li>
+          {Array.from({ length: totalPages }, (_, index) => (
+            <li key={index}>
+              <a 
+                onClick={() => handlePageChange(index + 1)} 
+                className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === index + 1 ? 'text-blue-600 border border-gray-300 bg-blue-50' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
+              >
+                {index + 1}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a 
+              onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : totalPages)} 
+              className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'}`}
+              style={{ cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+            >
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
   );
 };

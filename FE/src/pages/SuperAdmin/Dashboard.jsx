@@ -6,7 +6,7 @@ import CancelTable from '../../componens/CancelTable';
 import Sidebar from '../../componens/SideBar';
 import axios from 'axios';
 
-function Dashboard() {
+function DataBaseInven() {
   const [inventories, setInventories] = useState([]); // State untuk menyimpan data inventories
 
   useEffect(() => {
@@ -24,14 +24,13 @@ function Dashboard() {
   }, []); // Hanya dijalankan saat komponen pertama kali di-mount
 
   return (
-    <div className="body">
-      
+    <div className="">
+      <Sidebar />
       <InvenTable inventories={inventories} /> {/* Passing inventories sebagai props */}
       <AddProduct setInventories={setInventories} /> {/* Passing setInventories untuk update */}
       <DeleteProduct setInventories={setInventories} /> {/* Komponen DeleteProduct */}
-      <CancelTable/>
     </div>
   );
 }
 
-export default Dashboard;
+export default DataBaseInven;

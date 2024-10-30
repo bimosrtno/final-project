@@ -6,7 +6,7 @@ const SalesForm = ({ onClose }) => {
     customer_name: "",
     phone: "",
     address: "",
-    id_customer: "", 
+    id_customer: "",
     items: [
       {
         nama_produk: "",
@@ -72,11 +72,7 @@ const SalesForm = ({ onClose }) => {
   };
 
   const calculateTotal = (items) => {
-    let total = 0;
-    items.forEach(item => {
-      total += item.total_harga;
-    });
-    return total;
+    return items.reduce((total, item) => total + item.total_harga, 0);
   };
 
   const handleChange = (e, index) => {
@@ -101,13 +97,13 @@ const SalesForm = ({ onClose }) => {
         ...prevData,
         address: value,
       }));
-      return; // Keluar dari fungsi setelah mengupdate address
+      return;
     }
 
     setFormData(prevData => ({
       ...prevData,
       items: updatedItems,
-      total_transaksi: calculateTotal(updatedItems), // Update total transaksi
+      total_transaksi: calculateTotal(updatedItems),
     }));
   };
 
@@ -126,7 +122,7 @@ const SalesForm = ({ onClose }) => {
     setFormData(prevData => ({
       ...prevData,
       items: updatedItems,
-      total_transaksi: calculateTotal(updatedItems), // Update total transaksi
+      total_transaksi: calculateTotal(updatedItems),
     }));
   };
 
@@ -162,7 +158,7 @@ const SalesForm = ({ onClose }) => {
           ],
           total_transaksi: 0,
         });
-        onClose(); // Menutup modal setelah submit
+        onClose();
       } else {
         const errorData = await response.json();
         alert(`Gagal menambahkan data sales: ${errorData.message}`);
@@ -173,82 +169,116 @@ const SalesForm = ({ onClose }) => {
     }
   };
 
+  const formatRupiah = (value) => {
+    return `Rp ${value.toLocaleString()}`; // Format penulisan rupiah
+  };
+
   return (
-    <div>
-      <h2>Form Penjualan</h2>
-      <form onSubmit={handleSubmit}>
-        <label>ID Transaksi: {simulatedId}</label>
-        <label>Pilih Customer:</label>
-        <select name="customer_name" onChange={handleCustomerChange}>
-          <option value="">Pilih customer</option>
-          {customers.map(customer => (
-            <option key={customer.id_customer} value={customer.Name}>
-              {customer.Name}
-            </option>
-          ))}
-        </select>
-
-        <label>Customer ID:</label>
-        <input
-          type="text"
-          value={formData.id_customer}
-          readOnly
-        />
-        <label>Phone:</label>
-        <input
-          type="text"
-          value={formData.phone}
-          readOnly
-        />
-        <label>Address:</label>
-        <input
-          type="text"
-          name="address"
-          value={formData.address}
-          onChange={(e) => handleChange(e, -1)}
-        />
-
-        {formData.items.map((item, index) => (
-          <div key={index}>
-            <label>Nama Produk:</label>
-            <select
-              name="nama_produk"
-              value={item.nama_produk}
-              onChange={(e) => handleChange(e, index)}
-            >
-              <option value="">Pilih produk</option>
-              {namaProduks.map(product => (
-                <option key={product.kode_produk} value={product.nama_produk}>
-                  {product.nama_produk}
-                </option>
-              ))}
-            </select>
-            <label>Quantity:</label>
-            <input
-              type="number"
-              name="quantity"
-              value={item.quantity}
-              onChange={(e) => handleChange(e, index)}
-              min="1"
-            />
-            <label>Harga Jual: Rp {item.harga_jual}</label>
-            <label>Total Harga: Rp {item.total_harga}</label>
-            {index > 0 && (
-              <button type="button" onClick={() => handleRemoveProduct(index)}>
-                Hapus Produk
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden">
+        <div className="relative w-full max-w-md p-4">
+          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div className="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Form Penjualan
+              </h3>
+              <button
+                type="button"
+                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                onClick={onClose}
+              >
+                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
               </button>
-            )}
-          </div>
-        ))}
+            </div>
+            <form className="p-4" onSubmit={handleSubmit}>
+              <label>ID Transaksi: {simulatedId}</label>
+              <label>Pilih Customer:</label>
+              <select name="customer_name" onChange={handleCustomerChange}>
+                <option value="">Pilih customer</option>
+                {customers.map(customer => (
+                  <option key={customer.id_customer} value={customer.Name}>
+                    {customer.Name}
+                  </option>
+                ))}
+              </select>
 
-        <button type="button" onClick={handleAddProduct}>
-          Tambah Produk
-        </button>
-        <h3>Total Transaksi: Rp {formData.total_transaksi}</h3>
-        <button type="submit">Submit</button>
-        <button type="button" onClick={onClose}>Cancel</button> {/* Tombol Cancel untuk menutup modal */}
-      </form>
-    </div>
+              <label>Customer ID:</label>
+              <input
+                type="text"
+                value={formData.id_customer}
+                readOnly
+                className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm"
+              />
+              <label>Phone:</label>
+              <input
+                type="text"
+                value={formData.phone}
+                readOnly
+                className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm"
+              />
+              <label>Address:</label>
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={(e) => handleChange(e, -1)}
+                className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm"
+              />
+
+              {formData.items.map((item, index) => (
+                <div key={index}>
+                  <label>Nama Produk:</label>
+                  <select
+                    name="nama_produk"
+                    value={item.nama_produk}
+                    onChange={(e) => handleChange(e, index)}
+                    className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm"
+                  >
+                    <option value="">Pilih produk</option>
+                    {namaProduks.map(product => (
+                      <option key={product.kode_produk} value={product.nama_produk}>
+                        {product.nama_produk}
+                      </option>
+                    ))}
+                  </select>
+                  <label>Quantity:</label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    value={item.quantity}
+                    onChange={(e) => handleChange(e, index)}
+                    min="1"
+                    className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm"
+                  />
+                  <label>Harga Jual: {formatRupiah(item.harga_jual)}</label>
+                  <label>Total Harga: {formatRupiah(item.total_harga)}</label>
+                  {index > 0 && (
+                    <button type="button" onClick={() => handleRemoveProduct(index)}>
+                      Hapus Produk
+                    </button>
+                  )}
+                </div>
+              ))}
+
+              <button type="button" onClick={handleAddProduct} className="mt-2">
+                Tambah Produk
+              </button>
+              <h3>Total Transaksi: {formatRupiah(formData.total_transaksi)}</h3>
+              <div className="flex justify-end mt-4">
+                <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+                  Submit
+                </button>
+                <button type="button" onClick={onClose} className="text-gray-500 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm px-5 py-2.5">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div> 
+    </>
   );
 };
 

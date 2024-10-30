@@ -1,0 +1,12 @@
+.centered {
+    flex-grow: 1; /* Konten mengambil ruang yang tersisa */
+    display: flex;
+    flex-direction: column; /* Mengatur elemen dalam kolom */
+    align-items: center; /* Memusatkan konten secara horizontal */
+    justify-content: center; /* Memusatkan konten secara vertical, jika diperlukan */
+    padding: 2rem; /* Tambahkan ruang di sekitar konten */
+  }
+  
+  table {
+    margin: 0 auto; /* Memusatkan tabel */
+  }

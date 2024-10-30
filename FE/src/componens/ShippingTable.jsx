@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 const ShippingTable = () => {
   const [salesData, setSalesData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [salesPerPage] = useState(3); // Mengatur jumlah data per halaman
 
   useEffect(() => {
     const fetchSalesData = async () => {
@@ -125,56 +127,100 @@ const ShippingTable = () => {
     printWindow.print();
   };
 
+  // Pagination logic
+  const indexOfLastSale = currentPage * salesPerPage;
+  const indexOfFirstSale = indexOfLastSale - salesPerPage;
+  const currentSalesData = salesData
+    .filter((sale) => sale.status !== 'Batal')
+    .slice(indexOfFirstSale, indexOfLastSale);
+  const totalPages = Math.ceil(salesData.filter((sale) => sale.status !== 'Batal').length / salesPerPage);
+
   return (
     <div>
-      <h2>Shipping Table</h2>
+    
       <div style={{ overflowX: 'auto' }}>
-        <table>
+        <table style={{ width: '100%', tableLayout: 'auto' }}>
           <thead>
             <tr>
               <th>ID Transaksi</th>
               <th>Customer Name</th>
-              <th>Nama Produk</th>
+              <th>Nama Produk</th> {/* Lebar kolom otomatis */}
               <th>No. HP</th>
-              <th>Alamat</th>
+              <th>Alamat</th> {/* Lebar kolom otomatis */}
               <th>Quantity</th>
               <th>Date</th>
               <th>Status</th>
-              <th>Action</th> {/* Column for action buttons */}
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {salesData
-              .filter((sale) => sale.status !== 'Batal')
-              .map((sale) => (
-                <tr key={sale.id_transaksi}>
-                  <td>{sale.id_transaksi}</td>
-                  <td>{sale.customer_name}</td>
-                  <td>{sale.nama_produk.join(", ")}</td>
-                  <td>{sale.phone}</td>
-                  <td>{sale.address}</td>
-                  <td>{sale.quantity.join(", ")}</td>
-                  <td>{new Date(sale.date).toLocaleDateString('id-ID')}</td>
-                  <td>
-                    {sale.status === 'terkirim' ? (
-                      <span>{sale.status}</span>
-                    ) : (
-                      <select
-                        value={sale.status}
-                        onChange={(e) => updateStatus(sale.id_transaksi, e.target.value)}
-                      >
-                        <option value="Proses">Proses</option>
-                        <option value="terkirim">Terkirim</option>
-                      </select>
-                    )}
-                  </td>
-                  <td>
-                    <button onClick={() => printReceipt(sale)}>Print Resi</button>
-                  </td>
-                </tr>
-              ))}
+            {currentSalesData.map((sale) => (
+              <tr key={sale.id_transaksi}>
+                <td>{sale.id_transaksi}</td>
+                <td>{sale.customer_name}</td>
+                <td>{sale.nama_produk.join(", ")}</td>
+                <td>{sale.phone}</td>
+                <td>{sale.address}</td>
+                <td>{sale.quantity.join(", ")}</td>
+                <td>{new Date(sale.date).toLocaleDateString('id-ID')}</td>
+                <td>
+                  {sale.status === 'terkirim' ? (
+                    <span>{sale.status}</span>
+                  ) : (
+                    <select
+                      value={sale.status}
+                      onChange={(e) => updateStatus(sale.id_transaksi, e.target.value)}
+                    >
+                      <option value="Proses">Proses</option>
+                      <option value="terkirim">Terkirim</option>
+                    </select>
+                  )}
+                </td>
+                <td>
+                <button 
+  type="button" 
+  className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+  onClick={() => printReceipt(sale)}>
+  Print Resi
+</button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
+
+        {/* Pagination Component */}
+        <nav aria-label="Page navigation example">
+          <ul className="flex items-center -space-x-px h-8 text-sm">
+            <li>
+              <button
+                onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}
+                className={`flex items-center justify-center px-3 h-8 ms-0 leading-tight ${currentPage === 1 ? 'text-gray-300' : 'text-gray-500'} bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700`}
+                disabled={currentPage === 1}
+              >
+                <span className="sr-only">Previous</span>
+              </button>
+            </li>
+            {[...Array(totalPages)].map((_, index) => (
+              <li key={index}>
+                <button
+                  onClick={() => setCurrentPage(index + 1)}
+                  className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === index + 1 ? 'text-blue-600 bg-blue-50' : 'text-gray-500 bg-white'} border border-gray-300 hover:bg-gray-100 hover:text-gray-700`}
+                >
+                  {index + 1}
+                </button>
+              </li>
+            ))}
+            <li>
+              <button
+                onClick={() => setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages)}
+                className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === totalPages ? 'text-gray-300' : 'text-gray-500'} bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700`}
+                disabled={currentPage === totalPages}
+              >
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   );

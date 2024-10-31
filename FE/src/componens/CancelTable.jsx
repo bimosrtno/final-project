@@ -65,9 +65,8 @@ const CancelTable = () => {
     const waUrl = `https://wa.me/62${cleanedPhone.slice(1)}?text=Halo%20${encodeURIComponent(customerName)},%20berikut%20adalah%20ID%20transaksinya%20ya%20${encodeURIComponent(idTransaksi)}.%20Silahkan%20pergi%20ke%20landing%20page%20kami%20untuk%20tracking%20pesanannya.%20Terimakasih.`;
     return waUrl;
   };
-
-  // Filter only sales with status "batal"
-  const canceledSalesData = salesData.filter(sale => sale.status === "batal");
+// Filter only sales with status "batal" and "Batal"
+const canceledSalesData = salesData.filter(sale => sale.status.toLowerCase() === 'batal');
 
   return (
     <div>

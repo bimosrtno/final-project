@@ -24,7 +24,8 @@ const ShippingTable = () => {
           return bId - aId; // Sort descending
         });
 
-        setSalesData(sortedData);
+        // Set the filtered sales data that excludes "Batal" status
+        setSalesData(sortedData.filter(sale => sale.status !== 'Batal'));
       } catch (error) {
         console.error('Error fetching sales data:', error);
         alert(error.message);
@@ -48,12 +49,15 @@ const ShippingTable = () => {
         throw new Error(`Gagal mengupdate status: ${response.status} ${response.statusText}`);
       }
 
-      // Update the salesData without changing the order
-      setSalesData((prevSalesData) =>
-        prevSalesData.map((sale) =>
+      // Update the salesData
+      setSalesData((prevSalesData) => {
+        const updatedSales = prevSalesData.map((sale) =>
           sale.id_transaksi === idTransaksi ? { ...sale, status: newStatus } : sale
-        )
-      );
+        );
+
+        // Filter out any sales that are now "Batal" or "batal"
+        return updatedSales.filter(sale => sale.status !== 'batal','Batal');
+      });
     } catch (error) {
       console.error('Error updating status:', error);
       alert(error.message);
@@ -130,23 +134,20 @@ const ShippingTable = () => {
   // Pagination logic
   const indexOfLastSale = currentPage * salesPerPage;
   const indexOfFirstSale = indexOfLastSale - salesPerPage;
-  const currentSalesData = salesData
-    .filter((sale) => sale.status !== 'Batal')
-    .slice(indexOfFirstSale, indexOfLastSale);
-  const totalPages = Math.ceil(salesData.filter((sale) => sale.status !== 'Batal').length / salesPerPage);
+  const currentSalesData = salesData.slice(indexOfFirstSale, indexOfLastSale);
+  const totalPages = Math.ceil(salesData.length / salesPerPage);
 
   return (
     <div>
-    
       <div style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', tableLayout: 'auto' }}>
           <thead>
             <tr>
               <th>ID Transaksi</th>
               <th>Customer Name</th>
-              <th>Nama Produk</th> {/* Lebar kolom otomatis */}
+              <th>Nama Produk</th>
               <th>No. HP</th>
-              <th>Alamat</th> {/* Lebar kolom otomatis */}
+              <th>Alamat</th>
               <th>Quantity</th>
               <th>Date</th>
               <th>Status</th>
@@ -173,16 +174,17 @@ const ShippingTable = () => {
                     >
                       <option value="Proses">Proses</option>
                       <option value="terkirim">Terkirim</option>
+                 
                     </select>
                   )}
                 </td>
                 <td>
-                <button 
-  type="button" 
-  className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-  onClick={() => printReceipt(sale)}>
-  Print Resi
-</button>
+                  <button 
+                    type="button" 
+                    className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                    onClick={() => printReceipt(sale)}>
+                    Print Resi
+                  </button>
                 </td>
               </tr>
             ))}
@@ -217,6 +219,7 @@ const ShippingTable = () => {
                 className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === totalPages ? 'text-gray-300' : 'text-gray-500'} bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700`}
                 disabled={currentPage === totalPages}
               >
+                <span className="sr-only">Next</span>
               </button>
             </li>
           </ul>

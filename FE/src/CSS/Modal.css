@@ -9,6 +9,7 @@
   display: flex;
   justify-content: center; /* Memusatkan secara horizontal */
   align-items: center; /* Memusatkan secara vertikal */
+  z-index: 1000; /* Menentukan z-index untuk lebih tinggi */
 }
 
 .modal {
@@ -17,4 +18,5 @@
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Shadow */
   max-width: 500px; /* Lebar maksimum untuk modal */
   width: 100%; /* Lebar 100% dari kontainernya */
+  z-index: 1001; /* Menentukan z-index yang lebih tinggi agar modal berada di atas overlay */
 }

@@ -148,7 +148,7 @@ router.put('/cancel/:id', async (req, res) => {
   try {
       const result = await pool.query(
           'UPDATE sales SET status = $1, note = $2 WHERE id_transaksi = $3 RETURNING *',
-          ['batal', note, id]
+          ['Batal', note, id]
       );
 
       if (result.rowCount === 0) {

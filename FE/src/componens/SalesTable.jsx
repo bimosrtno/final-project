@@ -55,7 +55,7 @@ const SalesTable = () => {
       const updatedSale = await response.json();
       setSalesData((prevSalesData) =>
         prevSalesData.map((sale) =>
-          sale.id_transaksi === updatedSale.id_transaksi ? { ...sale, status: 'batal', note: updatedSale.note } : sale
+          sale.id_transaksi === updatedSale.id_transaksi ? { ...sale, status: "Batal", note: updatedSale.note } : sale
         )
       );
 
@@ -65,6 +65,20 @@ const SalesTable = () => {
       console.error('Error updating status:', error);
       alert(error.message);
     }
+  };
+
+  const formatPhoneNumber = (phone) => {
+    let formattedPhone = phone.replace(/\D/g, "");
+    if (formattedPhone.startsWith("0")) {
+      formattedPhone = "62" + formattedPhone.slice(1);
+    }
+    return formattedPhone;
+  };
+
+  const createWhatsAppLink = (phone, name, transactionId) => {
+    const formattedPhone = formatPhoneNumber(phone);
+    const message = `Halo ${name}, ini ID transaksinya ya: ${transactionId}. Silahkan search di landing page kami untuk mengecek status transaksi.`;
+    return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -79,8 +93,8 @@ const SalesTable = () => {
   return (
     <div>
       {message && <p>{message}</p>}
-      <div className="relative overflow-x-auto">
-        <table className="table-auto w-full text-left text-sm text-gray-500 dark:text-gray-400">
+      <div className="relative overflow-x-auto flex justify-center">
+        <table className="table-auto w-full mx-auto text-left text-sm text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="w-1/8 px-2 py-1">ID Transaksi</th>
@@ -102,7 +116,7 @@ const SalesTable = () => {
                 <td className="px-2 py-3">{sale.nama_produk.join(", ")}</td>
                 <td className="px-2 py-3">
                   <a
-                    href={`https://wa.me/62${sale.phone.replace(/[^0-9]/g, "")}`}
+                    href={createWhatsAppLink(sale.phone, sale.customer_name, sale.id_transaksi)} // Update tautan WhatsApp
                     target="_blank"
                     rel="noopener noreferrer"
                   >

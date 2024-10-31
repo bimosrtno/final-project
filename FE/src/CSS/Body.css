@@ -2,5 +2,20 @@ body {
   background-color: white !important;
   color: black !important;
   margin: 0; /* Menghilangkan margin agar tidak ada masalah dengan padding */
-  padding-top: 4rem; /* Memberikan ruang di atas untuk navbar */
+  padding-top: 5rem; /* Memberikan ruang di atas untuk navbar */
+  height: 100vh; /* Pastikan tinggi badan 100% layar */
+  display: flex;
+  flex-direction: column; /* Membuat konten dalam kolom */
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.flex-1 {
+  flex: 1; /* Membuat elemen ini untuk mengisi ruang yang tersisa */
 }

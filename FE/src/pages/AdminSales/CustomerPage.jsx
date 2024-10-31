@@ -5,7 +5,7 @@ import AddCustomer from '../../componens/ButtonCustAdmin';
 import NavbarSales from '../../componens/NavbarSales'
 function CustomerPage() {
   return (
-    <div className="body">
+    <div>
       <NavbarSales/> 
       <AddCustomer/> 
       <CustTabel /> 

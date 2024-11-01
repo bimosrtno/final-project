@@ -3,7 +3,7 @@ import React from 'react';
 function InvenTable({ inventories }) {
   return (
     <div>
-      <h2>Inventori</h2>
+      <h2>Inventori Table</h2>
       <table border="1" style={{ marginTop: '20px', width: '100%' }}>
         <thead>
           <tr>
@@ -27,6 +27,7 @@ function InvenTable({ inventories }) {
         </tbody>
       </table>
     </div>
+    
   );
 }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import '../CSS/tablesuperadmin.css';
 
-const CancelTable = () => {
+const SuksesTable = () => {
   const [salesData, setSalesData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -37,20 +38,21 @@ const CancelTable = () => {
     return waUrl;
   };
 
-  const canceledSalesData = salesData.filter(sale => sale.status.toLowerCase() === 'batal');
+  // Memfilter data untuk hanya status "Terkirim"
+  const successfulSalesData = salesData.filter(sale => sale.status.toLowerCase() === 'terkirim');
 
-  const totalPages = Math.ceil(canceledSalesData.length / itemsPerPage);
+  const totalPages = Math.ceil(successfulSalesData.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = canceledSalesData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = successfulSalesData.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  // Fungsi untuk menghitung total transaksi yang dibatalkan
-  const calculateTotalCanceled = () => {
-    return canceledSalesData.reduce((total, sale) => total + parseFloat(sale.total_transaksi), 0);
+  // Menghitung total transaksi yang sukses
+  const calculateTotalSuccessful = () => {
+    return successfulSalesData.reduce((total, sale) => total + parseFloat(sale.total_transaksi), 0);
   };
 
   const formatCurrency = (amount) => {
@@ -59,13 +61,13 @@ const CancelTable = () => {
 
   return (
     <div className="ml-8">
-      <h2 className="text-xl mb-4">Sales Table (Batal)</h2>
-      {/* Menampilkan total transaksi yang dibatalkan */}
+      <h2 className="text-xl mb-4">Sales Table (Terkirim)</h2>
+      {/* Menampilkan total transaksi yang sukses */}
       <div className="mt-4">
-        <span className="font-bold">Total Transaksi Dibatalkan: {formatCurrency(calculateTotalCanceled())}</span>
+        <span className="font-bold">Total Transaksi Sukses: {formatCurrency(calculateTotalSuccessful())}</span>
       </div>
       <div className="relative overflow-x-auto">
-        <table className="min-w-full max-w-[40%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <table className="table admin min-w-full max-w-[40%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-4 py-1">ID Transaksi</th>
@@ -76,8 +78,6 @@ const CancelTable = () => {
               <th scope="col" className="px-4 py-1">Quantity</th>
               <th scope="col" className="px-4 py-1">Total Transaksi</th>
               <th scope="col" className="px-4 py-1">Date</th>
-              <th scope="col" className="px-4 py-1">Status</th>
-              <th scope="col" className="px-4 py-1">Note</th>
             </tr>
           </thead>
           <tbody>
@@ -100,14 +100,12 @@ const CancelTable = () => {
                 <td className="px-4 py-1">{sale.quantity.join(", ")}</td>
                 <td className="px-4 py-1">{sale.total_transaksi}</td>
                 <td className="px-4 py-1">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
-                <td className="px-4 py-1">{sale.status}</td>
-                <td className="px-4 py-1">{sale.note}</td>
+
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-
 
       {/* Pagination */}
       <nav aria-label="Page navigation example" className="mt-4">
@@ -153,4 +151,4 @@ const CancelTable = () => {
   );
 };
 
-export default CancelTable;
+export default SuksesTable;

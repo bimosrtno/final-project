@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import CancelTable from '../../componens/CancelTable';
 import Sidebar from '../../componens/SideBar';
-import axios from 'axios';
+import SuksesTable from '../../componens/SuksesTransTable';
 
 function DataBaseSales() {
   return (
     <div className="body">
- <Sidebar/>
-      
-      <CancelTable/>
+      <Sidebar />
+      <SuksesTable className="mb-6" /> {/* Tambahkan margin bottom untuk memberi jarak */}
+      <div className='mt-1'> {/* Tambahkan margin top 4 */}
+      <CancelTable/> 
+      </div>
     </div>
   );
 }

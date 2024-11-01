@@ -1,0 +1,17 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body.admin {
+    background-color: white !important; /* Pastikan background putih */
+    color: black !important; /* Pastikan teks berwarna hitam */
+    margin: 0;
+    padding-top: 10rem; /* Memberikan ruang di atas untuk navbar */
+    min-height: 100vh; /* Pastikan tinggi badan 100% layar */
+    display: flex;
+    flex-direction: column; /* Membuat konten dalam kolom */
+  }
+
+  

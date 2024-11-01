@@ -3,7 +3,7 @@ import axios from 'axios';
 import AddStock from '../../componens/AddStock'; // Pastikan path ini sesuai
 import InvenTable from '../../componens/InvenTabel'; // Pastikan path ini sesuai
 import NavbarInven from '../../componens/NavBarInven';
-
+import '../../CSS/Bodyadmin.css';
 function GudangDashboard() {
   const [inventories, setInventories] = useState([]);
 
@@ -21,11 +21,12 @@ function GudangDashboard() {
   }, []);
 
   return (
-    <div className="body">
+    <div className="body.admin">
       <NavbarInven />
+      <div className="mt-20"> {/* Tambahkan margin top 4 */}
+        <InvenTable inventories={inventories} /> {/* Pass data to InvenTable */}
+      </div>
       <AddStock inventories={inventories} setInventories={setInventories} /> {/* Pass data to AddStock */}
-      <InvenTable inventories={inventories} /> {/* Pass data to InvenTable */}
-      
     </div>
   );
 }

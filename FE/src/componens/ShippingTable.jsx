@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 const ShippingTable = () => {
   const [salesData, setSalesData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [salesPerPage] = useState(3); // Mengatur jumlah data per halaman
+  const [salesPerPage] = useState(4); // Mengatur jumlah data per halaman
 
   useEffect(() => {
     const fetchSalesData = async () => {
@@ -195,13 +195,7 @@ const ShippingTable = () => {
         <nav aria-label="Page navigation example">
           <ul className="flex items-center -space-x-px h-8 text-sm">
             <li>
-              <button
-                onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}
-                className={`flex items-center justify-center px-3 h-8 ms-0 leading-tight ${currentPage === 1 ? 'text-gray-300' : 'text-gray-500'} bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700`}
-                disabled={currentPage === 1}
-              >
-                <span className="sr-only">Previous</span>
-              </button>
+              
             </li>
             {[...Array(totalPages)].map((_, index) => (
               <li key={index}>
@@ -214,13 +208,7 @@ const ShippingTable = () => {
               </li>
             ))}
             <li>
-              <button
-                onClick={() => setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages)}
-                className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === totalPages ? 'text-gray-300' : 'text-gray-500'} bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700`}
-                disabled={currentPage === totalPages}
-              >
-                <span className="sr-only">Next</span>
-              </button>
+              
             </li>
           </ul>
         </nav>

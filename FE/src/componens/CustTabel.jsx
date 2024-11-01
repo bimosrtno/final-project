@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../CSS/table.css"; // Impor file CSS
+import AddCustomer from "./ButtonCustAdmin";
 
 const PAGE_SIZE = 5; // Jumlah pelanggan yang ditampilkan per halaman
 
@@ -65,7 +66,7 @@ const CustomerTable = () => {
 
   return (
     <div className="flex justify-center py-4">
-      <div className="relative overflow-x-auto w-full max-w-screen-lg">
+      <div className="relative overflow-x-auto w-full">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -111,19 +112,22 @@ const CustomerTable = () => {
             ))}
           </tbody>
         </table>
-
-        {/* Pagination Controls */}
-        <div className="flex justify-center mt-4">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => handlePageChange(index + 1)}
-              className={`mx-1 px-4 py-2 border rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 hover:bg-blue-100'}`}
-            >
-              {index + 1}
-            </button>
-          ))}
+        
+        <div className="flex justify-between items-center mt-4">
+          <AddCustomer />
+          <div className="flex justify-center w-full">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageChange(index + 1)}
+                className={`mx-1 px-4 py-2 border rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 hover:bg-blue-100'}`}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
         </div>
+
       </div>
     </div>
   );

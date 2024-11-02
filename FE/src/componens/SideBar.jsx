@@ -22,6 +22,7 @@ const Sidebar = () => {
             <ul className="dropdown-menu">
               <li><Link to="/super-admin/database-inventoris">Inventoris </Link></li>
               <li><Link to="/super-admin/database-sales">Sales </Link></li>
+              <li><Link to="/super-admin/database-customer">Customer </Link></li>
             </ul>
           )}
         </li>

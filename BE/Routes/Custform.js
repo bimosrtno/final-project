@@ -75,4 +75,34 @@ router.put('/:Name/status', async (req, res) => {
     }
 });
 
+// Endpoint untuk mendapatkan total transaksi dan jumlah transaksi berdasarkan customer_id
+router.get('/:customerId/transactions', async (req, res) => {
+    const { customerId } = req.params;
+
+    try {
+        const transactionQuery = `
+            SELECT 
+                COUNT(*) AS total_count,
+                SUM(total_transaksi) AS total_amount
+            FROM 
+                sales 
+            WHERE 
+                id_customer = $1
+        `;
+        const result = await pool.query(transactionQuery, [customerId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json('Customer not found or no transactions');
+        }
+
+        res.json({
+            totalCount: result.rows[0].total_count,
+            totalAmount: result.rows[0].total_amount
+        });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json('Server error');
+    }
+});
+
 module.exports = router;

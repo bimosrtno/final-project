@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function FormCust() {
+function FormCust({ onClose }) { // Menerima prop onClose
   const [formData, setFormData] = useState({
     Name: '',
     Phone: '',
@@ -32,7 +32,7 @@ function FormCust() {
       .then((response) => {
         setResponseMessage('Data berhasil dikirim!');
         fetchSavedData();
-        setFormData({ 
+        setFormData({
           Name: '',
           Phone: '',
           Email: '',
@@ -64,73 +64,50 @@ function FormCust() {
   return (
     <div>
       <h1>Form Customer</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Nama:
+      <form className="max-w-md mx-auto" onSubmit={handleSubmit}>
+        <div className="relative z-0 w-full mb-5 group">
+          <input type="text" name="Name" id="floating_name" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " value={formData.Name} onChange={handleInputChange} required />
+          <label htmlFor="floating_name" className="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0">Nama</label>
+        </div>
+        
+        <div className="relative z-0 w-full mb-5 group">
           <input
-            type="text"
-            name="Name"
-            value={formData.Name}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Nomor:
-          <input
-            type="text"
+            type="tel"
             name="Phone"
+            id="floating_phone"
+            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            placeholder=" "
             value={formData.Phone}
             onChange={handleInputChange}
+            pattern="[0-9]*" // Memastikan hanya angka yang bisa dimasukkan
             required
+            maxLength="12" // Mengatur panjang maksimal sesuai format
           />
-        </label>
-        <br />
-        <label>
-          Email:
-          <input
-            type="email"
-            name="Email"
-            value={formData.Email}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Perusahaan:
-          <input
-            type="text"
-            name="Company"
-            value={formData.Company}
-            onChange={handleInputChange}
-          />
-        </label>
-        <br />
-        <label>
-          Domisili:
-          <input
-            type="text"
-            name="City"
-            value={formData.City}
-            onChange={handleInputChange}
-            required
-          />
-        </label>
-        <br />
-        <button type="submit">Kirim</button>
+          <label htmlFor="floating_phone" className="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0">Nomor Telepon</label>
+        </div>
+
+        <div className="relative z-0 w-full mb-5 group">
+          <input type="email" name="Email" id="floating_email" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " value={formData.Email} onChange={handleInputChange} required />
+          <label htmlFor="floating_email" className="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0">Email</label>
+        </div>
+
+        <div className="relative z-0 w-full mb-5 group">
+          <input type="text" name="Company" id="floating_company" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " value={formData.Company} onChange={handleInputChange} />
+          <label htmlFor="floating_company" className="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0">Perusahaan</label>
+        </div>
+
+        <div className="relative z-0 w-full mb-5 group">
+          <input type="text" name="City" id="floating_city" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " value={formData.City} onChange={handleInputChange} required />
+          <label htmlFor="floating_city" className="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0">Domisili</label>
+        </div>
+
+        <div className="flex justify-between">
+          <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Kirim</button>
+          <button type="button" onClick={onClose} className="text-gray-500 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Cancel</button>
+        </div>
       </form>
 
-      {responseMessage && <p>{responseMessage}</p>}
-      <h2>Data yang Tersimpan:</h2>
-      <ul>
-        {savedData.map((data, index) => (
-          <li key={index}>
-            {data.Name} - {data.Phone} - {data.Email} - {data.Company} - {data.City}
-          </li>
-        ))}
-      </ul>
+      {responseMessage && <p>{responseMessage}</p>}    
     </div>
   );
 }

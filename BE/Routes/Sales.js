@@ -13,6 +13,34 @@ async function getLastTransactionId() {
     }
 }
 
+
+// Route GET untuk mengambil data sales berdasarkan ID transaksi
+router.get('/', async (req, res) => {
+    const { transactionId } = req.query; // Mengambil transactionId dari query
+
+    try {
+        let query;
+        let values;
+
+        if (transactionId) {
+            query = 'SELECT * FROM sales WHERE id_transaksi = $1';
+            values = [transactionId];
+        } else {
+            query = 'SELECT * FROM sales'; // Mengambil semua data jika tidak ada query
+            values = [];
+        }
+
+        const result = await pool.query(query, values);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching sales data:', error);
+        res.status(500).json({ error: 'Gagal mengambil data sales', details: error.message });
+    }
+});
+
+
+
+
 // Route POST untuk menambahkan sales baru
 router.post('/', async (req, res) => {
     const { items, customer_name, phone, address, total_transaksi, id_customer } = req.body;

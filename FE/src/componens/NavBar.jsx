@@ -1,16 +1,15 @@
+// src/NavBar.jsx
 import React from 'react';
+import SearchBar from './SearchBar';
 
 function Navbar() {
   return (
-    <nav className="navbar">
-      <div className="container">
-        <a href="/" className="logo">TemanTani</a>
-        <ul className="nav-links">
-          <li><a href="/">Beranda</a></li>
-          <li><a href="/tentang">Tentang</a></li>
-          <li><a href="/layanan">Layanan</a></li>
-          <li><a href="/kontak">Kontak</a></li>
-        </ul>
+    <nav className="bg-white border-b border-gray-200">
+      <div className="max-w-screen-lg mx-auto flex items-center justify-between p-1">
+        <a href="/" className="text-lg font-bold">TemanTani</a>
+        <div className="flex space-x-3">
+          <SearchBar />
+        </div>
       </div>
     </nav>
   );

@@ -2,44 +2,63 @@ import React, { useState } from 'react';
 
 const CancelTransaction = () => {
   const [transactionId, setTransactionId] = useState('');
-  const [note, setNote] = useState('');
+  const [note, setNote] = useState(''); // Note masih di sini, akan bisa kosong
   const [message, setMessage] = useState('');
   const [isOpen, setIsOpen] = useState(false); // state untuk mengontrol modal
 
-  const handleCancel = async () => {
+  const checkTransactionStatus = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/sales/cancel/${transactionId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ note }),
-      });
-
+      const response = await fetch(`http://localhost:5000/api/sales/status/${id}`); // Ubah endpoint sesuai kebutuhan
       if (response.ok) {
-        setMessage('Transaksi berhasil dibatalkan');
-        // Reset form
-        setTransactionId('');
-        setNote('');
-        setIsOpen(false); // tutup modal setelah berhasil
+        const data = await response.json();
+        return data.status; // Asumsi status dikembalikan sebagai string
       } else {
-        const errorData = await response.json();
-        setMessage('Gagal membatalkan transaksi: ' + errorData.error);
+        throw new Error('Gagal memeriksa status transaksi');
       }
     } catch (error) {
-      setMessage('Terjadi kesalahan: ' + error.message);
+      setMessage('Terjadi kesalahan saat memeriksa status: ' + error.message);
     }
   };
+
+  const handleCancel = async () => {
+    const status = await checkTransactionStatus(transactionId);
+    if (status === 'Batal' || status === 'batal') {
+        setMessage('Transaksi ini sudah dibatalkan, tidak dapat diajukan lagi.');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`http://localhost:5000/api/sales/cancel/${transactionId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ note }),
+        });
+
+        const responseData = await response.text(); // Menggunakan text untuk melihat isi response
+        if (response.ok) {
+            setMessage('Transaksi berhasil dibatalkan');
+            setTransactionId('');
+            setNote('');
+            setIsOpen(false);
+        } else {
+            setMessage('Gagal membatalkan transaksi: ' + responseData);
+        }
+    } catch (error) {
+        setMessage('Terjadi kesalahan: ' + error.message);
+    }
+};
 
   return (
     <>
       {/* Modal toggle */}
       <button 
         onClick={() => setIsOpen(true)} 
-       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
         type="button"
       >
-        Cancel Transaktion
+        Batalkan Transaksi
       </button>
 
       {/* Main modal */}
@@ -74,10 +93,9 @@ const CancelTransaction = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 mb-4"
                 />
                 <textarea
-                  placeholder="Catatan"
+                  placeholder="Catatan (opsional)"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  required
                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-4"
                 />
                 <div className="flex justify-between">

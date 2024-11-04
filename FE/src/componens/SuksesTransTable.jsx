@@ -65,6 +65,7 @@ const SuksesTable = () => {
       <div className="w-full max-w-4xl ml-8">
         <h2 className="text-xl mb-4">Sales Table (Terkirim)</h2>
         <div className="mt-4">
+   
           <span className="font-bold">Total Transaksi Sukses: {formatCurrency(successfulSalesData.reduce((total, sale) => total + parseFloat(sale.total_transaksi), 0))}</span>
         </div>
         
@@ -73,10 +74,10 @@ const SuksesTable = () => {
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
                 <th className="px-4 py-2">ID Transaksi</th>
-                <th className="px-4 py-2">Customer Name</th>
+                <th className="px-4 py-2">Nama Customer</th>
                 <th className="px-4 py-2">No. HP</th>
                 <th className="px-4 py-2">Total Transaksi</th>
-                <th className="px-4 py-2">Date</th>
+                <th className="px-4 py-2">Tanggal</th>
                 <th className="px-4 py-2">Detail</th>
               </tr>
             </thead>

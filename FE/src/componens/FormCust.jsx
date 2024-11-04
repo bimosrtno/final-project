@@ -63,7 +63,7 @@ function FormCust({ onClose }) { // Menerima prop onClose
 
   return (
     <div>
-      <h1>Form Customer</h1>
+      <h2 className="text-center">Form Customer</h2>
       <form className="max-w-md mx-auto" onSubmit={handleSubmit}>
         <div className="relative z-0 w-full mb-5 group">
           <input type="text" name="Name" id="floating_name" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " value={formData.Name} onChange={handleInputChange} required />

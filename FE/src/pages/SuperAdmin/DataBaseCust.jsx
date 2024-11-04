@@ -8,7 +8,7 @@ function CustDataPage() {
   return (
     <div className="body">
    <Sidebar/>
-      <h2>MASIH PROSES</h2>
+      <h2>List Customer</h2>
       <CustData />  
     </div>
   );

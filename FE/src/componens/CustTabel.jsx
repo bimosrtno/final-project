@@ -51,7 +51,7 @@ const CustomerTable = () => {
 
   const createWhatsAppLink = (phone, name) => {
     const formattedPhone = formatPhoneNumber(phone);
-    const message = `Halo ${name}, maaf ya lagi tes templet ehehehhehe`;
+    const message = `Halo ${name}, perkenalan kami dari Teman Tani. Silakan bertanya tentang produk kami!`;
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
   };
 
@@ -70,11 +70,12 @@ const CustomerTable = () => {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="px-6 py-3">Name</th>
-              <th scope="col" className="px-6 py-3">Phone</th>
+              <th scope="col" className="px-6 py-3">Customer ID</th> {/* Kolom ID Customer */}
+              <th scope="col" className="px-6 py-3">Nama</th>
+              <th scope="col" className="px-6 py-3">Nomor</th>
               <th scope="col" className="px-6 py-3">Email</th>
-              <th scope="col" className="px-6 py-3">Company</th>
-              <th scope="col" className="px-6 py-3">City</th>
+              <th scope="col" className="px-6 py-3">Perusahaan</th>
+              <th scope="col" className="px-6 py-3">Domisili</th>
               <th scope="col" className="px-6 py-3">Source</th>
               <th scope="col" className="px-6 py-3">Status</th>
             </tr>
@@ -82,6 +83,7 @@ const CustomerTable = () => {
           <tbody>
             {currentCustomers.map((customer) => (
               <tr key={customer.Name} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <td className="px-6 py-4">{customer.id_customer}</td> {/* Menampilkan ID Customer */}
                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{customer.Name}</td>
                 <td className="px-6 py-4">
                   <a

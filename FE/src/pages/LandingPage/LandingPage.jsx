@@ -21,7 +21,7 @@ const LandingPage = () => {
       <Navbar />
       <div className="flex flex-col items-center justify-start min-h-screen bg-blue-500 text-white text-center p-4 pt-16"> {/* Ganti h-screen dengan min-h-screen dan padding top */}
         <h1 className="text-4xl font-bold mb-4">Selamat Datang di TemanTani</h1>
-        <p className="text-xl mb-8">
+        <p className="text-xl mb-8 text-justify">
           TemanTani telah berkomitmen untuk menjadi pionir dalam industri pupuk, 
           menyediakan solusi yang inovatif dan ramah lingkungan sejak didirikan. 
           Kami memahami tantangan yang dihadapi petani dalam aksesibilitas dan 

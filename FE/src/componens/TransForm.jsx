@@ -59,14 +59,24 @@ const SalesForm = ({ onClose }) => {
     fetchLastTransactionId();
   }, []);
 
-  const handleCustomerChange = (e) => {
-    const selectedCustomer = customers.find(customer => customer.Name === e.target.value);
+  const handleIDCustomerChange = (e) => {
+    const customerId = e.target.value;
+
+    const selectedCustomer = customers.find(customer => customer.id_customer === customerId);
     if (selectedCustomer) {
       setFormData(prevData => ({
         ...prevData,
         customer_name: selectedCustomer.Name,
         phone: selectedCustomer.Phone,
         id_customer: selectedCustomer.id_customer,
+      }));
+    } else {
+      // Reset nama dan phone jika ID tidak ditemukan
+      setFormData(prevData => ({
+        ...prevData,
+        customer_name: "",
+        phone: "",
+        id_customer: customerId, // Simpan ID yang diketik
       }));
     }
   };
@@ -116,7 +126,7 @@ const SalesForm = ({ onClose }) => {
       ],
     }));
   };
-
+  
   const handleRemoveProduct = (index) => {
     const updatedItems = formData.items.filter((_, i) => i !== index);
     setFormData(prevData => ({
@@ -132,6 +142,15 @@ const SalesForm = ({ onClose }) => {
     if (!formData.customer_name || !formData.phone || !formData.address) {
       alert("Semua field harus diisi!");
       return;
+    }
+
+    // Cek stok sebelum submit
+    for (const item of formData.items) {
+      const selectedProduct = namaProduks.find(product => product.nama_produk === item.nama_produk);
+      if (selectedProduct && item.quantity > selectedProduct.stok) {
+        alert(`Stok barang tidak mencukupi untuk produk: ${item.nama_produk}. Silahkan periksa lagi.`);
+        return;
+      }
     }
 
     try {
@@ -160,8 +179,7 @@ const SalesForm = ({ onClose }) => {
         });
         onClose();
       } else {
-        const errorData = await response.json();
-        alert(`Gagal menambahkan data sales: ${errorData.message}`);
+        alert("Stok tidak mencukupi, harap periksa kembali.");
       }
     } catch (error) {
       console.error("Error submitting sales:", error);
@@ -194,23 +212,25 @@ const SalesForm = ({ onClose }) => {
             </div>
             <form className="p-4" onSubmit={handleSubmit}>
               <label>ID Transaksi: {simulatedId}</label>
-              <label>Pilih Customer:</label>
-              <select name="customer_name" onChange={handleCustomerChange}>
-                <option value="">Pilih customer</option>
-                {customers.map(customer => (
-                  <option key={customer.id_customer} value={customer.Name}>
-                    {customer.Name}
-                  </option>
-                ))}
-              </select>
+
+              {/* Input untuk ID Customer yang dapat diketik */}
+              <label>ID Customer:</label>
+              <input
+                type="text"
+                name="id_customer"
+                value={formData.id_customer}
+                onChange={handleIDCustomerChange} // Mengubah fungsi penanganan
+                className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm"
+              />
 
               <label>Customer ID:</label>
               <input
                 type="text"
-                value={formData.id_customer}
+                value={formData.customer_name}
                 readOnly
                 className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm"
               />
+              
               <label>Phone:</label>
               <input
                 type="text"
@@ -218,6 +238,7 @@ const SalesForm = ({ onClose }) => {
                 readOnly
                 className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm"
               />
+              
               <label>Address:</label>
               <input
                 type="text"

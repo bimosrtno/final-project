@@ -16,11 +16,13 @@ app.use(bodyParser.json()); // Menggunakan body-parser untuk JSON
 const custformRouter = require('./Routes/Custform');
 const salesRouter = require('./Routes/Sales'); // Memastikan rute Sales diimpor
 const inventorisRouter = require('./Routes/Inventoris');
+const ChartRouter = require('./Routes/Chart');
 
 // Mengatur rute
 app.use('/customers', custformRouter);       // Rute untuk customer
 app.use('/api/sales', salesRouter);          // Rute untuk sales
 app.use('/api/inventoris', inventorisRouter); // Rute untuk inventoris
+app.use('/api/chart', ChartRouter);         // Rute untuk chart
 
 // Penanganan Error
 app.use((err, req, res, next) => {

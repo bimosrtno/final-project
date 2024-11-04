@@ -3,6 +3,7 @@ import '../CSS/table.css';
 import TransButton from "./TransButton";
 import CancelTransaction from "./CancelTrans";
 
+
 const SalesTable = () => {
   const [salesData, setSalesData] = useState([]);
   const [note, setNote] = useState('');
@@ -69,6 +70,7 @@ const SalesTable = () => {
     }
   };
 
+  
   const formatPhoneNumber = (phone) => {
     let formattedPhone = phone.replace(/\D/g, "");
     if (formattedPhone.startsWith("0")) {
@@ -100,13 +102,13 @@ const SalesTable = () => {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
               <th scope="col" className="px-2 py-1 w-60">ID Transaksi</th>
-              <th scope="col" className="px-2 py-1 w-60">Customer Name</th>
-              <th scope="col" className="px-2 py-1 w-60">Nama Produk</th>
-              <th scope="col" className="px-2 py-1">No. HP</th>
+              <th scope="col" className="px-2 py-1 w-60">Nama Customer</th>
+              <th scope="col" className="px-2 py-1 w-60">Nama Product</th>
+              <th scope="col" className="px-2 py-1">Nomor </th>
               <th scope="col" className="px-2 py-1 w-60">Alamat</th>
-              <th scope="col" className="px-2 py-1">Quantity</th>
+              <th scope="col" className="px-2 py-1">jumlah</th>
               <th scope="col" className="px-2 py-1">Total</th>
-              <th scope="col" className="px-2 py-1">Date</th>
+              <th scope="col" className="px-2 py-1">Tanggal</th>
               <th scope="col" className="px-2 py-1">Status</th>
             </tr>
           </thead>

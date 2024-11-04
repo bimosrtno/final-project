@@ -76,11 +76,11 @@ const CancelTable = () => {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-4 py-1">ID Transaksi</th>
-              <th scope="col" className="px-4 py-1">Customer Name</th>
+              <th scope="col" className="px-4 py-1">Nama Customer</th>
               <th scope="col" className="px-4 py-1">No. HP</th>
               <th scope="col" className="px-4 py-1">Total Transaksi</th>
               <th scope="col" className="px-4 py-1">Note</th>
-              <th scope="col" className="px-4 py-1">Date</th>
+              <th scope="col" className="px-4 py-1">Tanggal</th>
               <th scope="col" className="px-4 py-1">Detail</th> {/* Kolom untuk tombol detail */}
             </tr>
           </thead>
@@ -91,7 +91,7 @@ const CancelTable = () => {
                 <td className="px-4 py-1">{sale.customer_name}</td>
                 <td className="px-4 py-1">
                   <a 
-                    href={`https://wa.me/62${sale.phone}`} 
+                    href={`https://wa.me/62${sale.phone}?text=Halo%20${encodeURIComponent(name)},%20perkenalkan%20saya%20Bimo%20dari%20Teman%20Tani.%20Perihal%20pembatalan%20transaksi%20akhir-akhir%20ini,%20boleh%20kan%20kami%20tau%20alasannya%20kenapa?%20Terima kasih,%20sehat%20selalu!`}
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
@@ -134,14 +134,14 @@ const CancelTable = () => {
               <div className="p-4">
                 {selectedSale && (
                   <div>
+                    <p><strong>Tanggal:</strong> {new Date(selectedSale.date).toLocaleDateString('id-ID')}</p>
                     <p><strong>ID Transaksi:</strong> {selectedSale.id_transaksi}</p>
-                    <p><strong>Customer Name:</strong> {selectedSale.customer_name}</p>
+                    <p><strong>Nama Customer:</strong> {selectedSale.customer_name}</p>
                     <p><strong>No HP:</strong> {selectedSale.phone}</p>
                     <p><strong>Alamat:</strong> {selectedSale.address}</p>
                     <p><strong>Produk:</strong> {selectedSale.nama_produk.join(", ")}</p>
                     <p><strong>Quantity:</strong> {selectedSale.quantity.join(", ")}</p>
                     <p><strong>Total Transaksi:</strong> {formatCurrency(selectedSale.total_transaksi)}</p>
-                    <p><strong>Date:</strong> {new Date(selectedSale.date).toLocaleDateString('id-ID')}</p>
                     <p><strong>Status:</strong> {selectedSale.status}</p>
                     <p><strong>Note:</strong> {selectedSale.note}</p>
                   </div>

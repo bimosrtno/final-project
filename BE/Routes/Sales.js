@@ -213,6 +213,29 @@ router.get('/customers', async (req, res) => {
     }
 });
 
+// Route untuk mendapatkan Top Sale
+router.get('/top-sale', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT id_transaksi, customer_name, total_transaksi
+            FROM sales 
+            WHERE status = 'terkirim'
+            ORDER BY total_transaksi DESC 
+            LIMIT 1
+        `);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Tidak ada data penjualan yang statusnya Terkirim' });
+        }
+
+        console.log("Top Sale data:", result.rows[0]); // Debug log
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Error fetching top sale data:', error);
+        res.status(500).json({ error: 'Gagal mengambil data top sale', details: error.message });
+    }
+});
+
 
 
 

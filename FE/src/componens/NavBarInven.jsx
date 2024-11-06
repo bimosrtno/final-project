@@ -10,12 +10,12 @@ function NavbarInven() {
                 <ul className="flex space-x-4"> {/* Gunakan flex untuk menampilkan tombol secara horizontal */}
                     <li>
                         <Link to="/admin-gudang" className="block py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600">
-                            Inventori
+                            Stock Barang
                         </Link>
                     </li>
                     <li>
                         <Link to="/admin-gudang/Shipping" className="block py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600">
-                            Shipping
+                            Tabel Pengiriman
                         </Link>
                     </li>
                     <li>

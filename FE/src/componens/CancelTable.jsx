@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 const CancelTable = () => {
   const [salesData, setSalesData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedSale, setSelectedSale] = useState(null); // State untuk menyimpan data penjualan yang dipilih
-  const [isModalOpen, setIsModalOpen] = useState(false); // State untuk mengatur modal
+  const [selectedSale, setSelectedSale] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const itemsPerPage = 5;
 
@@ -45,16 +45,14 @@ const CancelTable = () => {
     setCurrentPage(pageNumber);
   };
 
-  // Fungsi untuk menghitung total transaksi yang dibatalkan
   const calculateTotalCanceled = () => {
     return canceledSalesData.reduce((total, sale) => total + parseFloat(sale.total_transaksi), 0);
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
+    return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
   };
 
-  // Menampilkan modal dengan data yang dipilih
   const openModal = (sale) => {
     setSelectedSale(sale);
     setIsModalOpen(true);
@@ -69,7 +67,7 @@ const CancelTable = () => {
     <div className="ml-8">
       <h2 className="text-xl mb-4">Sales Table (Batal)</h2>
       <div className="mt-4">
-        <span className="font-bold">Total Transaksi Dibatalkan: {formatCurrency(calculateTotalCanceled())}</span>
+        <span className="font-bold">Total Transaksi Dibatalkan: Rp. {formatCurrency(calculateTotalCanceled())}</span>
       </div>
       <div className="relative overflow-x-auto">
         <table className="min-w-full max-w-full text-sm text-left rtl:text-right text-gray-500">
@@ -81,7 +79,7 @@ const CancelTable = () => {
               <th scope="col" className="px-4 py-1">Total Transaksi</th>
               <th scope="col" className="px-4 py-1">Note</th>
               <th scope="col" className="px-4 py-1">Tanggal</th>
-              <th scope="col" className="px-4 py-1">Detail</th> {/* Kolom untuk tombol detail */}
+              <th scope="col" className="px-4 py-1">Detail</th>
             </tr>
           </thead>
           <tbody>
@@ -91,7 +89,7 @@ const CancelTable = () => {
                 <td className="px-4 py-1">{sale.customer_name}</td>
                 <td className="px-4 py-1">
                   <a 
-                    href={`https://wa.me/62${sale.phone}?text=Halo%20${encodeURIComponent(name)},%20perkenalkan%20saya%20Bimo%20dari%20Teman%20Tani.%20Perihal%20pembatalan%20transaksi%20akhir-akhir%20ini,%20boleh%20kan%20kami%20tau%20alasannya%20kenapa?%20Terima kasih,%20sehat%20selalu!`}
+                    href={`https://wa.me/62${sale.phone}?text=Halo%20${encodeURIComponent(sale.customer_name)},%20perkenalkan%20saya%20Bimo%20dari%20Teman%20Tani.%20Perihal%20pembatalan%20transaksi%20akhir-akhir%20ini,%20boleh%20kan%20kami%20tau%20alasannya%20kenapa?%20Terima kasih,%20sehat%20selalu!`}
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
@@ -99,17 +97,22 @@ const CancelTable = () => {
                     {sale.phone}
                   </a>
                 </td>
-                <td className="px-4 py-1">{formatCurrency(sale.total_transaksi)}</td>
+                <td className="px-4 py-1">
+                  <div className="flex justify-between">
+                    <span>Rp.</span>
+                    <span>{formatCurrency(sale.total_transaksi)}</span>
+                  </div>
+                </td>
                 <td className="px-4 py-1">{sale.note}</td>
                 <td className="px-4 py-1">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
                 <td className="px-4 py-1">
-                <button 
-  onClick={() => openModal(sale)} 
-  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-  type="button"
->
-  Detail
-</button>
+                  <button 
+                    onClick={() => openModal(sale)} 
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                    type="button"
+                  >
+                    Detail
+                  </button>
                 </td>
               </tr>
             ))}
@@ -141,7 +144,7 @@ const CancelTable = () => {
                     <p><strong>Alamat:</strong> {selectedSale.address}</p>
                     <p><strong>Produk:</strong> {selectedSale.nama_produk.join(", ")}</p>
                     <p><strong>Quantity:</strong> {selectedSale.quantity.join(", ")}</p>
-                    <p><strong>Total Transaksi:</strong> {formatCurrency(selectedSale.total_transaksi)}</p>
+                    <p><strong>Total Transaksi:</strong> Rp. {formatCurrency(selectedSale.total_transaksi)}</p>
                     <p><strong>Status:</strong> {selectedSale.status}</p>
                     <p><strong>Note:</strong> {selectedSale.note}</p>
                   </div>

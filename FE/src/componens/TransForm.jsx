@@ -223,7 +223,7 @@ const SalesForm = ({ onClose }) => {
                 className="w-full border border-gray-300 rounded-lg p-2 mt-1 text-sm"
               />
 
-              <label>Customer ID:</label>
+              <label>Nama Customer:</label>
               <input
                 type="text"
                 value={formData.customer_name}

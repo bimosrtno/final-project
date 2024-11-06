@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db'); // Sesuaikan dengan konfigurasi pool Anda 
+const pool = require('../db'); // Sesuaikan dengan konfigurasi pool 
 
 // Endpoint untuk mendapatkan data transaksi terkirim
 router.get('/success', (req, res) => {

@@ -57,7 +57,7 @@ const SuksesTable = () => {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
+    return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
   };
 
   return (
@@ -65,8 +65,7 @@ const SuksesTable = () => {
       <div className="w-full max-w-4xl ml-8">
         <h2 className="text-xl mb-4">Sales Table (Terkirim)</h2>
         <div className="mt-4">
-   
-          <span className="font-bold">Total Transaksi Sukses: {formatCurrency(successfulSalesData.reduce((total, sale) => total + parseFloat(sale.total_transaksi), 0))}</span>
+          <span className="font-bold">Total Transaksi Sukses: {`Rp. ${formatCurrency(successfulSalesData.reduce((total, sale) => total + parseFloat(sale.total_transaksi), 0))}`}</span>
         </div>
         
         <div className="relative overflow-x-auto">
@@ -87,18 +86,30 @@ const SuksesTable = () => {
                   <td className="px-4 py-2">{sale.id_transaksi}</td>
                   <td className="px-4 py-2">{sale.customer_name}</td>
                   <td className="px-4 py-2">
-                    <a href={`https://wa.me/62${sale.phone}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{sale.phone}</a>
+                    <a 
+                      href={`https://wa.me/62${sale.phone}?text=Halo%20${encodeURIComponent(sale.customer_name)},%20perkenalkan%20saya%20Bimo%20dari%20Teman%20Tani.%20Terima kasih%20sudah%20menjadi%20bagian%20Teman%20Tani.%20Jikalau%20berkenan%20kami%20ingin%20meminta%20feedback%20dari%20layanan%20kami.%20Terima%20kasih.`}
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-blue-600 hover:underline"
+                    >
+                      {sale.phone}
+                    </a>
                   </td>
-                  <td className="px-4 py-2">{formatCurrency(sale.total_transaksi)}</td>
+                  <td className="px-4 py-2 text-right">
+                    <div className="flex justify-between">
+                      <span>Rp.</span>
+                      <span>{formatCurrency(sale.total_transaksi)}</span>
+                    </div>
+                  </td>
                   <td className="px-4 py-2">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
                   <td className="px-4 py-2">
-                  <button 
-  onClick={() => openModal(sale)} 
-  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-  type="button"
->
-  Detail
-</button>
+                    <button 
+                      onClick={() => openModal(sale)} 
+                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                      type="button"
+                    >
+                      Detail
+                    </button>
                   </td>
                 </tr>
               ))}

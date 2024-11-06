@@ -1,4 +1,5 @@
 import React, { useState } from "react"; // Import usage useState
+import { Helmet } from "react-helmet";
 import Navbar from "../../componens/NavBar"; // Perbaiki path ke file Navbar.js 
 import "../../CSS/Navbar.css"; // Pastikan path ke file Navbar.css benar
 import "../../CSS/Body.css"; // Pastikan path ke file Body.css benar
@@ -18,6 +19,9 @@ const LandingPage = () => {
 
   return (
     <div>
+      <Helmet>  
+        <title>TemanTani</title>
+      </Helmet>
       <Navbar />
       <div className="flex flex-col items-center justify-start min-h-screen bg-blue-500 text-white text-center p-4 pt-16"> {/* Ganti h-screen dengan min-h-screen dan padding top */}
         <h1 className="text-4xl font-bold mb-4">Selamat Datang di TemanTani</h1>

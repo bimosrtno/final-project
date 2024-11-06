@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import AddProduct from '../../componens/AddProducts';
 import InvenTable from '../../componens/InvenTabel';
 import DeleteProduct from '../../componens/DeleteProduct';
@@ -22,6 +23,11 @@ function DataBaseInven() {
   }, []);
 
   return (
+    <div> 
+      <Helmet>
+        <title>Super Admin</title>
+      </Helmet> 
+    
     <div className="">
       <Sidebar />
       <InvenTable inventories={inventories} />
@@ -31,6 +37,8 @@ function DataBaseInven() {
         <AddProduct setInventories={setInventories} />
         <DeleteProduct setInventories={setInventories} />
       </div>
+    </div>
+
     </div>
   );
 }

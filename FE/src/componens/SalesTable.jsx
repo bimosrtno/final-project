@@ -81,7 +81,7 @@ const SalesTable = () => {
 
   const createWhatsAppLink = (phone, name, transactionId) => {
     const formattedPhone = formatPhoneNumber(phone);
-    const message = `Halo ${name}, ini ID transaksinya ya: ${transactionId}. Silahkan search di landing page kami untuk mengecek status transaksi.`;
+    const message = `Halo ${name}, ini ID transaksinya ya: ${transactionId}. Silahkan search di landing page kami untuk cek status transaksi. Gunakan Id Customer (...) untuk transaksi berikutnya`;
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
   };
 

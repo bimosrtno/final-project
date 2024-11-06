@@ -11,12 +11,17 @@ const BarChart = () => {
     useEffect(() => {
         const fetchSalesData = async () => {
             try {
+                // Menghitung tanggal 30 hari yang lalu
+                const today = new Date();
+                const last30Days = new Date();
+                last30Days.setDate(today.getDate() - 30);
+
                 // Mengambil data transaksi sukses
-                const responseSuccess = await fetch('http://localhost:5000/api/chart/success');
+                const responseSuccess = await fetch(`http://localhost:5000/api/chart/success?start_date=${last30Days.toISOString().split('T')[0]}&end_date=${today.toISOString().split('T')[0]}`);
                 const resultSuccess = await responseSuccess.json();
 
                 // Mengambil data transaksi batal
-                const responseFailed = await fetch('http://localhost:5000/api/chart/failed');
+                const responseFailed = await fetch(`http://localhost:5000/api/chart/failed?start_date=${last30Days.toISOString().split('T')[0]}&end_date=${today.toISOString().split('T')[0]}`);
                 const resultFailed = await responseFailed.json();
 
                 // Memastikan format data yang dikembalikan
@@ -42,7 +47,7 @@ const BarChart = () => {
     }, []);
 
     useEffect(() => {
-        const canvasSukses = document.getElementById('myBarChartSukses');
+        const canvasSukses = document.getElementById('myLineChartSukses');
         const ctxSukses = canvasSukses.getContext('2d');
 
         if (myChartSukses) {
@@ -50,16 +55,17 @@ const BarChart = () => {
         }
 
         myChartSukses = new Chart(ctxSukses, {
-            type: 'bar', // Mengubah tipe chart menjadi bar
+            type: 'line', // Mengubah tipe chart menjadi line
             data: {
                 labels: data.labels,
                 datasets: [
                     {
                         label: 'Total Transaksi Sukses',
                         data: data.totalTransaksi,
-                        backgroundColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1,
+                        borderWidth: 2,
+                        fill: false, // Mengisi area di bawah garis
                     }
                 ]
             },
@@ -69,15 +75,11 @@ const BarChart = () => {
                     x: {
                         title: {
                             display: true,
-                            text: 'Tanggal' // Nama sumbu x
+                            text: 'Tanggal'
                         }
                     },
                     y: {
                         beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Jumlah Transaksi' // Nama sumbu y
-                        }
                     }
                 },
                 plugins: {
@@ -89,7 +91,7 @@ const BarChart = () => {
             }
         });
 
-        const canvasBatal = document.getElementById('myBarChartBatal');
+        const canvasBatal = document.getElementById('myLineChartBatal');
         const ctxBatal = canvasBatal.getContext('2d');
 
         if (myChartBatal) {
@@ -97,16 +99,17 @@ const BarChart = () => {
         }
 
         myChartBatal = new Chart(ctxBatal, {
-            type: 'bar', // Tipe chart kedua juga bar
+            type: 'line', // Tipe chart kedua juga line
             data: {
                 labels: data.labels,
                 datasets: [
                     {
                         label: 'Total Transaksi Batal',
                         data: data.totalTransaksiBatal,
-                        backgroundColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1,
+                        borderWidth: 2,
+                        fill: false,
                     }
                 ]
             },
@@ -116,15 +119,11 @@ const BarChart = () => {
                     x: {
                         title: {
                             display: true,
-                            text: 'Tanggal' // Nama sumbu x
+                            text: 'Tanggal'
                         }
                     },
                     y: {
                         beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Jumlah Transaksi' // Nama sumbu y
-                        }
                     }
                 },
                 plugins: {
@@ -148,8 +147,8 @@ const BarChart = () => {
 
     return (
         <div>
-            <canvas id="myBarChartSukses" width="900" height="300"></canvas>
-            <canvas id="myBarChartBatal" width="900" height="300"></canvas>
+            <canvas id="myLineChartSukses" width="900" height="300"></canvas>
+            <canvas id="myLineChartBatal" width="900" height="300"></canvas>
         </div>
     );
 };

@@ -217,7 +217,7 @@ router.get('/customers', async (req, res) => {
 router.get('/top-sale', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT id_transaksi, customer_name, total_transaksi
+            SELECT id_transaksi, customer_name, total_transaksi, id_customer
             FROM sales 
             WHERE status = 'terkirim'
             ORDER BY total_transaksi DESC 

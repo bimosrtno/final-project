@@ -41,6 +41,7 @@ const TopSale = () => {
                 <div className="border p-4 rounded-lg bg-gray-100">
                     <p><strong>TOP SALES</strong> </p>
                     <p><strong>ID Transaksi:</strong> {topSale.id_transaksi}</p>
+                    <p><strong>ID Customer:</strong> {topSale.id_customer}</p>
                     <p><strong>Nama Customer:</strong> {topSale.customer_name}</p>
                     <p><strong>Total Transaksi:</strong> {formatRupiah(topSale.total_transaksi)}</p>
                 </div>

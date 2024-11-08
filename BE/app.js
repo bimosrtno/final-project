@@ -5,29 +5,33 @@ const app = express();
 
 // Middleware untuk CORS
 app.use(cors({
-  origin: 'http://localhost:5173', // Sesuaikan dengan origin frontend Anda
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+    origin: 'http://localhost:5173', // Sesuaikan dengan origin frontend Anda
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(bodyParser.json()); // Menggunakan body-parser untuk JSON
+app.use(express.json()); // Menggunakan express.json() untuk parsing JSON
 
-// Rute
-const custformRouter = require('./Routes/Custform');
-const salesRouter = require('./Routes/Sales'); // Memastikan rute Sales diimpor
-const inventorisRouter = require('./Routes/Inventoris');
-const ChartRouter = require('./Routes/Chart');
+// Mengimpor rute
+const authRouter = require('./Routes/Auth'); // Mengimpor rute autentikasi
+const custformRouter = require('./Routes/Custform'); // Rute untuk customer
+const salesRouter = require('./Routes/Sales'); // Rute untuk sales
+const inventorisRouter = require('./Routes/Inventoris'); // Rute untuk inventoris
+const chartRouter = require('./Routes/Chart'); // Rute untuk chart
 
 // Mengatur rute
-app.use('/customers', custformRouter);       // Rute untuk customer
-app.use('/api/sales', salesRouter);          // Rute untuk sales
+app.use('/api/auth', authRouter); // Rute untuk autentikasi
+app.use('/customers', custformRouter); // Rute untuk pelanggan
+app.use('/api/sales', salesRouter); // Rute untuk sales
 app.use('/api/inventoris', inventorisRouter); // Rute untuk inventoris
-app.use('/api/chart', ChartRouter);         // Rute untuk chart
+app.use('/api/chart', chartRouter); // Rute untuk chart
 
 // Penanganan Error
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
+    console.error(err);
+    res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
 });
 
-module.exports = app;
+
+
+module.exports = app; // Mengekspor app untuk digunakan dalam server.js

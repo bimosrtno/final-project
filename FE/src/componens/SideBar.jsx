@@ -43,7 +43,9 @@ const Sidebar = () => {
             </ul>
           )}
         </li>
-        <li className="text-gray-300 hover:text-white cursor-pointer">Admin List</li>
+        <li> 
+          <Link to= "/super-admin/admin" className="text-gray-300 hover:text-white cursor-pointer" >Admin List </Link>
+        </li>
         <li>
           <Link to="/login" className="text-gray-300 hover:text-white">
             Log Out

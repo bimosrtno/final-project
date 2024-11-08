@@ -65,8 +65,8 @@ const CancelTable = () => {
 
   return (
     <div className="ml-8">
-      <h2 className="text-xl mb-4">Sales Table (Batal)</h2>
-      <div className="mt-4">
+      <h2 className="text-xl mb-4">Tabel Transaksi Batal</h2>
+      <div className="mt-1">
         <span className="font-bold">Total Transaksi Dibatalkan: Rp. {formatCurrency(calculateTotalCanceled())}</span>
       </div>
       <div className="relative overflow-x-auto">

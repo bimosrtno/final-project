@@ -7,44 +7,56 @@ let myChartSukses, myChartBatal;
 
 const BarChart = () => {
     const [data, setData] = useState({ labels: [], totalTransaksi: [], totalTransaksiBatal: [] });
+    const [days, setDays] = useState(30); // Default to 30 days
+
+    const fetchSalesData = async (days) => {
+        try {
+            const today = new Date();
+            const startDate = new Date();
+            startDate.setDate(today.getDate() - days);
+
+            const responseSuccess = await fetch(`http://localhost:5000/api/chart/success?start_date=${startDate.toISOString().split('T')[0]}&end_date=${today.toISOString().split('T')[0]}`);
+            const resultSuccess = await responseSuccess.json();
+
+            const responseFailed = await fetch(`http://localhost:5000/api/chart/failed?start_date=${startDate.toISOString().split('T')[0]}&end_date=${today.toISOString().split('T')[0]}`);
+            const resultFailed = await responseFailed.json();
+
+            // Memastikan format data yang dikembalikan
+            if (resultSuccess && resultSuccess.rows && resultFailed && resultFailed.rows) {
+                const aggregatedDataSuccess = resultSuccess.rows.reduce((acc, item) => {
+                    const date = new Date(item.date).toLocaleDateString('id-ID');
+                    if (!acc[date]) {
+                        acc[date] = 0;
+                    }
+                    acc[date] += item.total_transaksi;
+                    return acc;
+                }, {});
+
+                const aggregatedDataFailed = resultFailed.rows.reduce((acc, item) => {
+                    const date = new Date(item.date).toLocaleDateString('id-ID');
+                    if (!acc[date]) {
+                        acc[date] = 0;
+                    }
+                    acc[date] += item.total_transaksi_batal;
+                    return acc;
+                }, {});
+
+                const labels = Object.keys(aggregatedDataSuccess);
+                const totalTransaksi = labels.map(label => aggregatedDataSuccess[label]);
+                const totalTransaksiBatal = labels.map(label => aggregatedDataFailed[label] || 0); // Default 0 jika tidak ada data
+
+                setData({ labels, totalTransaksi, totalTransaksiBatal });
+            } else {
+                console.error('Unexpected format', resultSuccess, resultFailed);
+            }
+        } catch (error) {
+            console.error('Error fetching sales data:', error);
+        }
+    };
 
     useEffect(() => {
-        const fetchSalesData = async () => {
-            try {
-                // Menghitung tanggal 30 hari yang lalu
-                const today = new Date();
-                const last30Days = new Date();
-                last30Days.setDate(today.getDate() - 30);
-
-                // Mengambil data transaksi sukses
-                const responseSuccess = await fetch(`http://localhost:5000/api/chart/success?start_date=${last30Days.toISOString().split('T')[0]}&end_date=${today.toISOString().split('T')[0]}`);
-                const resultSuccess = await responseSuccess.json();
-
-                // Mengambil data transaksi batal
-                const responseFailed = await fetch(`http://localhost:5000/api/chart/failed?start_date=${last30Days.toISOString().split('T')[0]}&end_date=${today.toISOString().split('T')[0]}`);
-                const resultFailed = await responseFailed.json();
-
-                // Memastikan format data yang dikembalikan
-                if (resultSuccess && resultSuccess.rows && resultFailed && resultFailed.rows) {
-                    const labels = resultSuccess.rows.map(item => {
-                        const date = new Date(item.date);
-                        return date.toLocaleDateString('id-ID'); // Format tanggal
-                    });
-
-                    const totalTransaksi = resultSuccess.rows.map(item => item.total_transaksi);
-                    const totalTransaksiBatal = resultFailed.rows.map(item => item.total_transaksi_batal);
-
-                    setData({ labels, totalTransaksi, totalTransaksiBatal });
-                } else {
-                    console.error('Unexpected format', resultSuccess, resultFailed);
-                }
-            } catch (error) {
-                console.error('Error fetching sales data:', error);
-            }
-        };
-
-        fetchSalesData();
-    }, []);
+        fetchSalesData(days);
+    }, [days]);
 
     useEffect(() => {
         const canvasSukses = document.getElementById('myLineChartSukses');
@@ -55,7 +67,7 @@ const BarChart = () => {
         }
 
         myChartSukses = new Chart(ctxSukses, {
-            type: 'line', // Mengubah tipe chart menjadi line
+            type: 'line',
             data: {
                 labels: data.labels,
                 datasets: [
@@ -65,7 +77,7 @@ const BarChart = () => {
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
                         borderWidth: 2,
-                        fill: false, // Mengisi area di bawah garis
+                        fill: false,
                     }
                 ]
             },
@@ -83,10 +95,7 @@ const BarChart = () => {
                     }
                 },
                 plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                    }
+                    legend: { display: true, position: 'top', }
                 }
             }
         });
@@ -99,7 +108,7 @@ const BarChart = () => {
         }
 
         myChartBatal = new Chart(ctxBatal, {
-            type: 'line', // Tipe chart kedua juga line
+            type: 'line',
             data: {
                 labels: data.labels,
                 datasets: [
@@ -127,10 +136,7 @@ const BarChart = () => {
                     }
                 },
                 plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                    }
+                    legend: { display: true, position: 'top', }
                 }
             }
         });
@@ -147,8 +153,14 @@ const BarChart = () => {
 
     return (
         <div>
-            <canvas id="myLineChartSukses" width="900" height="300"></canvas>
-            <canvas id="myLineChartBatal" width="900" height="300"></canvas>
+            <button onClick={() => setDays(30)}>30 Hari Terakhir</button>
+            <button onClick={() => setDays(7)}>7 Hari Terakhir</button>
+            <div style={{ width: '110%', height: '300px' }}>
+                <canvas id="myLineChartSukses"></canvas>
+            </div>
+            <div style={{ width: '110%', height: '300px' }}>
+                <canvas id="myLineChartBatal"></canvas>
+            </div>
         </div>
     );
 };

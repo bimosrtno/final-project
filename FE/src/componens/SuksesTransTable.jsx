@@ -63,7 +63,7 @@ const SuksesTable = () => {
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-4xl ml-8">
-        <h2 className="text-xl mb-4">Sales Table (Terkirim)</h2>
+        <h2 className="text-xl mb-4">Tabel Transaksi Sukses</h2>
         <div className="mt-4">
           <span className="font-bold">Total Transaksi Sukses: {`Rp. ${formatCurrency(successfulSalesData.reduce((total, sale) => total + parseFloat(sale.total_transaksi), 0))}`}</span>
         </div>

@@ -3,6 +3,7 @@ import '../../CSS/bodyadmin.css';
 import AddAdminForm from '../../componens/AddAdminForm';
 import Sidebar from '../../componens/SideBar';
 import AdminTable from '../../componens/AdminTable';
+import TemplateManager from '../../componens/TemplateManager';
 
 function AdminPage() {
   return (
@@ -10,6 +11,7 @@ function AdminPage() {
         <Sidebar/>
  <AddAdminForm/>
  <AdminTable/>
+ <TemplateManager/>
     </div>
   );
 }

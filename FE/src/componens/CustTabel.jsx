@@ -9,11 +9,12 @@ const CustomerTable = () => {
   const [customers, setCustomers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1); // Halaman saat ini
   const [totalPages, setTotalPages] = useState(0); // Total halaman
+  const [activeTemplates, setActiveTemplates] = useState([]); // State untuk menyimpan template aktif bertipe cust
 
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/customers?order=desc");
+        const response = await axios.get("http://localhost:5000/customers?status=active&order=desc");
         setCustomers(response.data);
         
         // Menghitung total halaman
@@ -24,7 +25,19 @@ const CustomerTable = () => {
       }
     };
 
+    const fetchActiveTemplates = async () => {
+      try {
+        // Ambil template bertipe 'cust' yang aktif
+        const response = await axios.get('http://localhost:5000/api/templates/cust/active');
+        const templates = await response.data;
+        setActiveTemplates(templates); // Simpan template aktif bertipe cust
+      } catch (error) {
+        console.error("Error fetching active templates:", error);
+      }
+    };
+
     fetchCustomers();
+    fetchActiveTemplates(); // Ambil template aktif bertipe cust
   }, []);
 
   const handleStatusChange = (Name, newStatus) => {
@@ -51,7 +64,13 @@ const CustomerTable = () => {
 
   const createWhatsAppLink = (phone, name) => {
     const formattedPhone = formatPhoneNumber(phone);
-    const message = `Halo ${name}, perkenalan kami dari Teman Tani. Silakan bertanya tentang produk kami!`;
+    const template = activeTemplates[0]; // Ambil template pertama bertipe 'cust'
+
+    // Gantikan placeholder dengan nilai yang sesuai; jika tidak ada template, gunakan pesan kosong
+    const message = template ? 
+      template.template.replace(/\${name}/g, name) :  
+      '';  // Kosongkan pesan default
+
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
   };
 
@@ -129,7 +148,6 @@ const CustomerTable = () => {
             ))}
           </div>
         </div>
-
       </div>
     </div>
   );

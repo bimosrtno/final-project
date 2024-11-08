@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import '../CSS/table.css';
 import TransButton from "./TransButton";
 import CancelTransaction from "./CancelTrans";
-
 
 const SalesTable = () => {
   const [salesData, setSalesData] = useState([]);
@@ -10,6 +9,7 @@ const SalesTable = () => {
   const [message, setMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [activeTemplates, setActiveTemplates] = useState([]); // State untuk menyimpan template aktif
 
   useEffect(() => {
     const fetchSalesData = async () => {
@@ -31,7 +31,18 @@ const SalesTable = () => {
       }
     };
     
+    const fetchActiveTemplates = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/templates/sls/active'); // Endpoint untuk semua template aktif
+        const templates = await response.json();
+        setActiveTemplates(templates); // Simpan template aktif
+      } catch (error) {
+        console.error("Error fetching active templates:", error);
+      }
+    };
+
     fetchSalesData();
+    fetchActiveTemplates(); // Ambil template aktif
     const intervalId = setInterval(fetchSalesData, 5000);
     return () => clearInterval(intervalId);
   }, []);
@@ -70,7 +81,6 @@ const SalesTable = () => {
     }
   };
 
-  
   const formatPhoneNumber = (phone) => {
     let formattedPhone = phone.replace(/\D/g, "");
     if (formattedPhone.startsWith("0")) {
@@ -79,9 +89,15 @@ const SalesTable = () => {
     return formattedPhone;
   };
 
-  const createWhatsAppLink = (phone, name, transactionId) => {
+  const createWhatsAppLink = (phone, customerName, transactionId) => {
     const formattedPhone = formatPhoneNumber(phone);
-    const message = `Halo ${name}, ini ID transaksinya ya: ${transactionId}. Silahkan search di landing page kami untuk cek status transaksi. Gunakan Id Customer (...) untuk transaksi berikutnya`;
+    const template = activeTemplates[0]; // Ambil template pertama yang aktif
+
+    // Gantikan placeholder dengan nilai yang sesuai
+    const message = template ? 
+      template.template.replace(/\${name}/g, customerName).replace(/\${transactionId}/g, transactionId) :
+      ''; // Kosongkan pesan jika tidak ada template
+
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
   };
 
@@ -104,9 +120,9 @@ const SalesTable = () => {
               <th scope="col" className="px-2 py-1 w-60">ID Transaksi</th>
               <th scope="col" className="px-2 py-1 w-60">Nama Customer</th>
               <th scope="col" className="px-2 py-1 w-60">Nama Product</th>
-              <th scope="col" className="px-2 py-1">Nomor </th>
+              <th scope="col" className="px-2 py-1">Nomor</th>
               <th scope="col" className="px-2 py-1 w-60">Alamat</th>
-              <th scope="col" className="px-2 py-1">jumlah</th>
+              <th scope="col" className="px-2 py-1">Jumlah</th>
               <th scope="col" className="px-2 py-1">Total</th>
               <th scope="col" className="px-2 py-1">Tanggal</th>
               <th scope="col" className="px-2 py-1">Status</th>
@@ -138,7 +154,7 @@ const SalesTable = () => {
           </tbody>
         </table>
       </div>
-      
+
       <div className="flex justify-between items-center px-4 py-2">
         <div className="flex space-x-2">
           <TransButton />

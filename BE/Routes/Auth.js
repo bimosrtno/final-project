@@ -32,10 +32,11 @@ router.post('/login', async (req, res) => {
 
     const user = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
 
-    if (user.rows.length === 0 || !(await bcrypt.compare(password, user.rows[0].password))) {
-        return res.status(401).json({ message: 'Invalid credentials' });
+    if (user.rows.length === 0 || !user.rows[0].is_active || !(await bcrypt.compare(password, user.rows[0].password))) {
+        return res.status(401).json({ message: 'Invalid credentials or account inactive' });
     }
 
+    // Jika kredensial valid, lanjutkan dengan proses login
     const token = jwt.sign({ 
         id: user.rows[0].id, 
         role: user.rows[0].role 
@@ -43,19 +44,46 @@ router.post('/login', async (req, res) => {
 
     res.json({ 
         token,
-        role: user.rows[0].role, // Mengembalikan role ke client
+        role: user.rows[0].role, 
     });
 });
 
-// Endpoint untuk mendapatkan semua data pengguna
 
+// Endpoint untuk mendapatkan semua data pengguna
 router.get('/users', async (req, res) => {
     try {
-        const result = await pool.query('SELECT id, username, role, nama, nomor FROM users');
+        const result = await pool.query('SELECT id, username, role, nama, nomor, is_active FROM users');
         res.json(result.rows);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error fetching users' });
+    }
+});
+
+router.put('/reset-password', async (req, res) => {
+    const { id, newPassword } = req.body;
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10); // Hash password baru
+
+    try {
+        await pool.query('UPDATE users SET password = $1 WHERE id = $2', [hashedNewPassword, id]);
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error updating password' });
+    }
+});
+
+router.put('/toggle-active', async (req, res) => {
+    const { id, isActive } = req.body;
+    console.log(`Updating user id: ${id} to is_active: ${isActive}`); // Debug log
+
+    try {
+        await pool.query('UPDATE users SET is_active = $1 WHERE id = $2', [isActive, id]); // Pastikan ini sesuai
+        res.status(200).json({ message: 'User status updated successfully' });
+    } catch (error) {
+        console.error('Error updating user status:', error);
+        res.status(500).json({ message: 'Error updating user status' });
     }
 });
 

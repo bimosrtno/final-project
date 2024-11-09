@@ -153,13 +153,13 @@ const TemplateManager = () => {
                                 <td className="border-b py-2 text-center">
                                     <button
                                         onClick={() => handleEdit(template)}
-                                        className="mr-2 text-blue-600 hover:underline"
+                                        className="mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
                                     >
                                         Edit
                                     </button>
                                     <button
                                         onClick={() => handleDelete(template.id)}
-                                        className="text-red-600 hover:underline"
+                                        className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5"
                                     >
                                         Hapus
                                     </button>
@@ -200,13 +200,13 @@ const TemplateManager = () => {
                                 <td className="border-b py-2 text-center">
                                     <button
                                         onClick={() => handleEdit(template)}
-                                        className="mr-2 text-blue-600 hover:underline"
+                                        className="mr-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
                                     >
                                         Edit
                                     </button>
                                     <button
                                         onClick={() => handleDelete(template.id)}
-                                        className="text-red-600 hover:underline"
+                                        className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5"
                                     >
                                         Hapus
                                     </button>

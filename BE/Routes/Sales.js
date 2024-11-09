@@ -213,31 +213,37 @@ router.get('/customers', async (req, res) => {
     }
 });
 
-// Route untuk mendapatkan Top Sale
+// Route untuk mendapatkan top sale
 router.get('/top-sale', async (req, res) => {
     try {
-        const result = await pool.query(`
-            SELECT id_transaksi, customer_name, total_transaksi, id_customer
-            FROM sales 
-            WHERE status = 'terkirim'
-            ORDER BY total_transaksi DESC 
-            LIMIT 1
-        `);
-        
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Tidak ada data penjualan yang statusnya Terkirim' });
-        }
-
-        console.log("Top Sale data:", result.rows[0]); // Debug log
+        const result = await pool.query('SELECT * FROM sales ORDER BY total_transaksi DESC LIMIT 1');
         res.json(result.rows[0]);
-    } catch (error) {
-        console.error('Error fetching top sale data:', error);
-        res.status(500).json({ error: 'Gagal mengambil data top sale', details: error.message });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Database query failed' });
     }
 });
 
-
-
-
-
+// Route untuk mendapatkan top customer
+router.get('/top-customer', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT id_customer, customer_name, COUNT(*) AS transaction_count, SUM(total_transaksi) AS total_transaksi
+            FROM sales
+            WHERE status = 'terkirim'
+            GROUP BY id_customer, customer_name
+            ORDER BY transaction_count DESC
+            LIMIT 1
+        `);
+        
+        if (result.rows.length > 0) {
+            res.json(result.rows[0]);
+        } else {
+            res.status(404).json({ message: "Tidak ada data customer." });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Database query failed' });
+    }
+});
 module.exports = router;

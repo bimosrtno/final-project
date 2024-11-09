@@ -21,29 +21,30 @@ const BarChart = () => {
             const responseFailed = await fetch(`http://localhost:5000/api/chart/failed?start_date=${startDate.toISOString().split('T')[0]}&end_date=${today.toISOString().split('T')[0]}`);
             const resultFailed = await responseFailed.json();
 
-            // Memastikan format data yang dikembalikan
             if (resultSuccess && resultSuccess.rows && resultFailed && resultFailed.rows) {
                 const aggregatedDataSuccess = resultSuccess.rows.reduce((acc, item) => {
-                    const date = new Date(item.date).toLocaleDateString('id-ID');
-                    if (!acc[date]) {
-                        acc[date] = 0;
+                    const date = new Date(item.date);
+                    const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    if (!acc[formattedDate]) {
+                        acc[formattedDate] = 0;
                     }
-                    acc[date] += item.total_transaksi;
+                    acc[formattedDate] += item.total_transaksi;
                     return acc;
                 }, {});
 
                 const aggregatedDataFailed = resultFailed.rows.reduce((acc, item) => {
-                    const date = new Date(item.date).toLocaleDateString('id-ID');
-                    if (!acc[date]) {
-                        acc[date] = 0;
+                    const date = new Date(item.date);
+                    const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    if (!acc[formattedDate]) {
+                        acc[formattedDate] = 0;
                     }
-                    acc[date] += item.total_transaksi_batal;
+                    acc[formattedDate] += item.total_transaksi_batal;
                     return acc;
                 }, {});
 
                 const labels = Object.keys(aggregatedDataSuccess);
                 const totalTransaksi = labels.map(label => aggregatedDataSuccess[label]);
-                const totalTransaksiBatal = labels.map(label => aggregatedDataFailed[label] || 0); // Default 0 jika tidak ada data
+                const totalTransaksiBatal = labels.map(label => aggregatedDataFailed[label] || 0);
 
                 setData({ labels, totalTransaksi, totalTransaksiBatal });
             } else {
@@ -83,10 +84,11 @@ const BarChart = () => {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         title: {
-                            display: true,
+                            display: false,
                             text: 'Tanggal'
                         }
                     },
@@ -95,7 +97,7 @@ const BarChart = () => {
                     }
                 },
                 plugins: {
-                    legend: { display: true, position: 'top', }
+                    legend: { display: true, position: 'top' }
                 }
             }
         });
@@ -124,10 +126,11 @@ const BarChart = () => {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
                         title: {
-                            display: true,
+                            display: false,
                             text: 'Tanggal'
                         }
                     },
@@ -136,7 +139,7 @@ const BarChart = () => {
                     }
                 },
                 plugins: {
-                    legend: { display: true, position: 'top', }
+                    legend: { display: true, position: 'top' }
                 }
             }
         });
@@ -153,13 +156,38 @@ const BarChart = () => {
 
     return (
         <div>
-            <button onClick={() => setDays(30)}>30 Hari Terakhir</button>
-            <button onClick={() => setDays(7)}>7 Hari Terakhir</button>
-            <div style={{ width: '110%', height: '300px' }}>
-                <canvas id="myLineChartSukses"></canvas>
+            <div className="mb-4 flex space-x-2">
+                <button 
+                    type="button" 
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                    onClick={() => setDays(30)}
+                >
+                    30 Hari Terakhir
+                </button>
+                <button 
+                    type="button" 
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"
+                    onClick={() => setDays(7)}
+                >
+                    7 Hari Terakhir
+                </button>
             </div>
-            <div style={{ width: '110%', height: '300px' }}>
-                <canvas id="myLineChartBatal"></canvas>
+            {/* Flex container for cards */}
+            <div className="flex space-x-4">
+                {/* Card for Total Transaksi Sukses */}
+                <a href="#" className="block max-w-xl w-full p-6 bg-white border border-gray-200 rounded-lg shadow mb-6 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Total Transaksi Sukses</h5>
+                    <div style={{ width: '100%', height: '300px' }}>
+                        <canvas id="myLineChartSukses" style={{ height: '100%', width: '100%' }}></canvas>
+                    </div>
+                </a>
+                {/* Card for Total Transaksi Batal */}
+                <a href="#" className="block max-w-xl w-full p-6 bg-white border border-gray-200 rounded-lg shadow mb-6 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Total Transaksi Batal</h5>
+                    <div style={{ width: '100%', height: '300px' }}>
+                        <canvas id="myLineChartBatal" style={{ height: '100%', width: '100%' }}></canvas>
+                    </div>
+                </a>
             </div>
         </div>
     );

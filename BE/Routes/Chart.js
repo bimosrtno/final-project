@@ -22,8 +22,8 @@ router.get('/success', (req, res) => {
 router.get('/failed', (req, res) => {
     const { start_date, end_date } = req.query;
     pool.query(
-        'SELECT date, SUM(total_transaksi) AS total_transaksi_batal FROM sales WHERE LOWER(status) = LOWER($1) AND date BETWEEN $2 AND $3 GROUP BY date ORDER BY date ASC',
-        ['batal', start_date, end_date],
+        'SELECT date, SUM(total_transaksi) AS total_transaksi_batal FROM sales WHERE LOWER(status) IN (LOWER($1), LOWER($2)) AND date BETWEEN $3 AND $4 GROUP BY date ORDER BY date ASC',
+        ['batal', 'Batal', start_date, end_date],
         (err, results) => {
             if (err) {
                 return res.status(500).json({ error: err.message });
@@ -33,5 +33,4 @@ router.get('/failed', (req, res) => {
         }
     );
 });
-
 module.exports = router;

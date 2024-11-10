@@ -1,0 +1,41 @@
+/* LandingPage.css */
+.landing-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: url('/path-to-your-background-image.jpg'); /* Ganti dengan path gambar latar */
+    background-size: cover;
+    background-position: center;
+    color: white;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .main-content {
+    position: relative;
+    z-index: 10;
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+  
+  .footer-text {
+    font-size: 0.875rem;
+    margin-top: 1rem;
+    color: #ccc;
+  }
+  

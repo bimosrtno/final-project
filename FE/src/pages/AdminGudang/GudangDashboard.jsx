@@ -4,7 +4,6 @@ import axios from 'axios';
 import AddStock from '../../componens/AddStock'; // Pastikan path ini sesuai
 import InvenTable from '../../componens/InvenTabel'; // Pastikan path ini sesuai
 import NavbarInven from '../../componens/NavBarInven';
-import '../../CSS/Bodyadmin.css';
 function GudangDashboard() {
   const [inventories, setInventories] = useState([]);
 

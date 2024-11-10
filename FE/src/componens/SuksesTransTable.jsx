@@ -63,29 +63,31 @@ const SuksesTable = () => {
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-4xl ml-8">
-        <h2 className="text-xl mb-4">Tabel Transaksi Sukses</h2>
-        <div className="mt-4">
+      <p className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Tabel Transaksi Sukses</p>
+        <div className="mt-2">
           <span className="font-bold">Total Transaksi Sukses: {`Rp. ${formatCurrency(successfulSalesData.reduce((total, sale) => total + parseFloat(sale.total_transaksi), 0))}`}</span>
         </div>
         
-        <div className="relative overflow-x-auto">
-          <table className="table-auto w-full text-sm text-left text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
-                <th className="px-4 py-2">ID Transaksi</th>
-                <th className="px-4 py-2">Nama Customer</th>
-                <th className="px-4 py-2">No. HP</th>
-                <th className="px-4 py-2">Total Transaksi</th>
-                <th className="px-4 py-2">Tanggal</th>
-                <th className="px-4 py-2">Detail</th>
+                <th scope="col" className="px-6 py-3">ID Transaksi</th>
+                <th scope="col" className="px-6 py-3">Nama Customer</th>
+                <th scope="col" className="px-6 py-3">No. HP</th>
+                <th scope="col" className="px-6 py-3">Total Transaksi</th>
+                <th scope="col" className="px-6 py-3">Tanggal</th>
+                <th scope="col" className="px-6 py-3">
+                  <span className="sr-only">Detail</span>
+                </th>
               </tr>
             </thead>
             <tbody>
               {currentItems.map((sale) => (
-                <tr className="bg-white border-b" key={sale.id_transaksi}>
-                  <td className="px-4 py-2">{sale.id_transaksi}</td>
-                  <td className="px-4 py-2">{sale.customer_name}</td>
-                  <td className="px-4 py-2">
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={sale.id_transaksi}>
+                  <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{sale.id_transaksi}</th>
+                  <td className="px-6 py-4">{sale.customer_name}</td>
+                  <td className="px-6 py-4">
                     <a 
                       href={`https://wa.me/62${sale.phone}?text=Halo%20${encodeURIComponent(sale.customer_name)},%20perkenalkan%20saya%20Bimo%20dari%20Teman%20Tani.%20Terima kasih%20sudah%20menjadi%20bagian%20Teman%20Tani.%20Jikalau%20berkenan%20kami%20ingin%20meminta%20feedback%20dari%20layanan%20kami.%20Terima%20kasih.`}
                       target="_blank" 
@@ -95,14 +97,14 @@ const SuksesTable = () => {
                       {sale.phone}
                     </a>
                   </td>
-                  <td className="px-4 py-2 text-right">
+                  <td className="px-6 py-4 text-right">
                     <div className="flex justify-between">
                       <span>Rp.</span>
                       <span>{formatCurrency(sale.total_transaksi)}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-2">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
-                  <td className="px-4 py-2">
+                  <td className="px-6 py-4">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
+                  <td className="px-6 py-4 text-right">
                     <button 
                       onClick={() => openModal(sale)} 
                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
@@ -141,7 +143,7 @@ const SuksesTable = () => {
                       <p><strong>Alamat:</strong> {selectedSale.address}</p>
                       <p><strong>Produk:</strong> {selectedSale.nama_produk.join(", ")}</p>
                       <p><strong>Quantity:</strong> {selectedSale.quantity.join(", ")}</p>
-                      <p><strong>Total Transaksi:</strong> {formatCurrency(selectedSale.total_transaksi)}</p>
+                      <p><strong>Total Transaksi:</strong> {`Rp. ${formatCurrency(selectedSale.total_transaksi)}`}</p>
                     </div>
                   )}
                 </div>

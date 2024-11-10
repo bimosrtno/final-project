@@ -44,7 +44,7 @@ function SearchBar() {
           value={transactionId}
           onChange={(e) => setTransactionId(e.target.value)}
           className="border rounded-l-md p-2 w-full"
-          placeholder="Masukkan ID Transaksi"
+          placeholder="Cari Transaksi Disini"
           required
         />
         <button type="submit" className="bg-blue-500 text-white p-2 rounded-r-md">

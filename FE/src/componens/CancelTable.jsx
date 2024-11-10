@@ -65,29 +65,29 @@ const CancelTable = () => {
 
   return (
     <div className="ml-8">
-      <h2 className="text-xl mb-4">Tabel Transaksi Batal</h2>
+   <p className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Tabel Transaksi Batal</p>
       <div className="mt-1">
         <span className="font-bold">Total Transaksi Dibatalkan: Rp. {formatCurrency(calculateTotalCanceled())}</span>
       </div>
-      <div className="relative overflow-x-auto">
-        <table className="min-w-full max-w-full text-sm text-left rtl:text-right text-gray-500">
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="px-4 py-1">ID Transaksi</th>
-              <th scope="col" className="px-4 py-1">Nama Customer</th>
-              <th scope="col" className="px-4 py-1">No. HP</th>
-              <th scope="col" className="px-4 py-1">Total Transaksi</th>
-              <th scope="col" className="px-4 py-1">Note</th>
-              <th scope="col" className="px-4 py-1">Tanggal</th>
-              <th scope="col" className="px-4 py-1">Detail</th>
+              <th scope="col" className="px-6 py-3">ID Transaksi</th>
+              <th scope="col" className="px-6 py-3">Nama Customer</th>
+              <th scope="col" className="px-6 py-3">No. HP</th>
+              <th scope="col" className="px-6 py-3">Total Transaksi</th>
+              <th scope="col" className="px-6 py-3">Note</th>
+              <th scope="col" className="px-6 py-3">Tanggal</th>
+              <th scope="col" className="px-6 py-3">Detail</th>
             </tr>
           </thead>
           <tbody>
             {currentItems.map((sale) => (
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={sale.id_transaksi}>
-                <td className="px-4 py-1">{sale.id_transaksi}</td>
-                <td className="px-4 py-1">{sale.customer_name}</td>
-                <td className="px-4 py-1">
+              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={sale.id_transaksi}>
+                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{sale.id_transaksi}</td>
+                <td className="px-6 py-4">{sale.customer_name}</td>
+                <td className="px-6 py-4">
                   <a 
                     href={`https://wa.me/62${sale.phone}?text=Halo%20${encodeURIComponent(sale.customer_name)},%20perkenalkan%20saya%20Bimo%20dari%20Teman%20Tani.%20Perihal%20pembatalan%20transaksi%20akhir-akhir%20ini,%20boleh%20kan%20kami%20tau%20alasannya%20kenapa?%20Terima kasih,%20sehat%20selalu!`}
                     target="_blank" 
@@ -97,15 +97,15 @@ const CancelTable = () => {
                     {sale.phone}
                   </a>
                 </td>
-                <td className="px-4 py-1">
+                <td className="px-6 py-4">
                   <div className="flex justify-between">
                     <span>Rp.</span>
                     <span>{formatCurrency(sale.total_transaksi)}</span>
                   </div>
                 </td>
-                <td className="px-4 py-1">{sale.note}</td>
-                <td className="px-4 py-1">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
-                <td className="px-4 py-1">
+                <td className="px-6 py-4">{sale.note}</td>
+                <td className="px-6 py-4">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
+                <td className="px-6 py-4">
                   <button 
                     onClick={() => openModal(sale)} 
                     className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"

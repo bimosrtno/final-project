@@ -15,37 +15,43 @@ const BarChart = () => {
             const startDate = new Date();
             startDate.setDate(today.getDate() - days);
 
+            // Fetch untuk transaksi sukses
             const responseSuccess = await fetch(`http://localhost:5000/api/chart/success?start_date=${startDate.toISOString().split('T')[0]}&end_date=${today.toISOString().split('T')[0]}`);
             const resultSuccess = await responseSuccess.json();
+            
+            // Log data sukses untuk debugging
+            console.log('Success Data:', resultSuccess);
 
+            // Fetch untuk transaksi batal
             const responseFailed = await fetch(`http://localhost:5000/api/chart/failed?start_date=${startDate.toISOString().split('T')[0]}&end_date=${today.toISOString().split('T')[0]}`);
             const resultFailed = await responseFailed.json();
+            
+            // Log data batal untuk debugging
+            console.log('Failed Data:', resultFailed);
 
             if (resultSuccess && resultSuccess.rows && resultFailed && resultFailed.rows) {
+                // Aggregate success data
                 const aggregatedDataSuccess = resultSuccess.rows.reduce((acc, item) => {
                     const date = new Date(item.date);
                     const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`;
-                    if (!acc[formattedDate]) {
-                        acc[formattedDate] = 0;
-                    }
-                    acc[formattedDate] += item.total_transaksi;
+                    acc[formattedDate] = (acc[formattedDate] || 0) + item.total_transaksi;
                     return acc;
                 }, {});
 
+                // Aggregate failed data
                 const aggregatedDataFailed = resultFailed.rows.reduce((acc, item) => {
                     const date = new Date(item.date);
                     const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`;
-                    if (!acc[formattedDate]) {
-                        acc[formattedDate] = 0;
-                    }
-                    acc[formattedDate] += item.total_transaksi_batal;
+                    acc[formattedDate] = (acc[formattedDate] || 0) + item.total_transaksi_batal;
                     return acc;
                 }, {});
 
+                // Prepare labels and data for chart
                 const labels = Object.keys(aggregatedDataSuccess);
                 const totalTransaksi = labels.map(label => aggregatedDataSuccess[label]);
                 const totalTransaksiBatal = labels.map(label => aggregatedDataFailed[label] || 0);
 
+                // Set data for charts
                 setData({ labels, totalTransaksi, totalTransaksiBatal });
             } else {
                 console.error('Unexpected format', resultSuccess, resultFailed);
@@ -144,13 +150,10 @@ const BarChart = () => {
             }
         });
 
+        // Cleanup function to destroy the chart on unmount
         return () => {
-            if (myChartSukses) {
-                myChartSukses.destroy();
-            }
-            if (myChartBatal) {
-                myChartBatal.destroy();
-            }
+            if (myChartSukses) myChartSukses.destroy();
+            if (myChartBatal) myChartBatal.destroy();
         };
     }, [data]);
 

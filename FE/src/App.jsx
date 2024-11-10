@@ -11,6 +11,8 @@ import DataBaseSales from "./pages/SuperAdmin/DataBaseSales.jsx";
 import PerformancePage from "./pages/SuperAdmin/PerformancePage.jsx";
 import CustDataPage from "./pages/SuperAdmin/DataBaseCust.jsx";
 import AdminPage from "./pages/SuperAdmin/AdminPage.jsx";
+import TamplatePage from "./pages/SuperAdmin/TamplatePage.jsx";
+
 
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
         <Route path="/super-admin/database-sales" element={<DataBaseSales />} />
         <Route path="/super-admin/database-customer" element={<CustDataPage />} />
         <Route path="/super-admin/admin" element={<AdminPage />} />
+        <Route path="/super-admin/template" element={<TamplatePage />} />
         
       </Routes>
     </BrowserRouter>

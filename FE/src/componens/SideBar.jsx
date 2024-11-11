@@ -45,7 +45,7 @@ const Sidebar = () => {
               </li>
               <li>
                 <Link to="/super-admin/database-sales" className="block px-4 py-2 text-gray-300 hover:text-white focus:outline-none">
-                  Sales 
+                  Penjualan 
                 </Link>
               </li>
             </ul>
@@ -54,7 +54,7 @@ const Sidebar = () => {
         
         <li>
           <button onClick={toggleOprasional} className="flex items-center w-full text-left py-2 bg-transparent text-gray-300 hover:text-white focus:outline-none">
-            <span className="flex-1">Oprasional</span>
+            <span className="flex-1">Operasional</span>
             <svg className="w-3 h-3" aria-hidden="true" fill="none" viewBox="0 0 10 6">
               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
             </svg>

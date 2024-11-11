@@ -16,7 +16,6 @@ function PerformancePage() {
     </Helmet>
     <div className="body">
    <Sidebar/>
-      <h2>MASIH PROSES</h2>
 <BarChart/>
       <TopSale/>
       <CustData/>

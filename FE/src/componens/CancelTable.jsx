@@ -65,10 +65,7 @@ const CancelTable = () => {
 
   return (
     <div className="ml-8">
-   <p className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Tabel Transaksi Batal</p>
-      <div className="mt-1">
-        <span className="font-bold">Total Transaksi Dibatalkan: Rp. {formatCurrency(calculateTotalCanceled())}</span>
-      </div>
+      <p className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Tabel Transaksi Batal</p>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -87,16 +84,7 @@ const CancelTable = () => {
               <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={sale.id_transaksi}>
                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{sale.id_transaksi}</td>
                 <td className="px-6 py-4">{sale.customer_name}</td>
-                <td className="px-6 py-4">
-                  <a 
-                    href={`https://wa.me/62${sale.phone}?text=Halo%20${encodeURIComponent(sale.customer_name)},%20perkenalkan%20saya%20Bimo%20dari%20Teman%20Tani.%20Perihal%20pembatalan%20transaksi%20akhir-akhir%20ini,%20boleh%20kan%20kami%20tau%20alasannya%20kenapa?%20Terima kasih,%20sehat%20selalu!`}
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    {sale.phone}
-                  </a>
-                </td>
+                <td className="px-6 py-4">{sale.phone}</td> {/* Mengubah hyperlink menjadi teks biasa */}
                 <td className="px-6 py-4">
                   <div className="flex justify-between">
                     <span>Rp.</span>
@@ -156,7 +144,7 @@ const CancelTable = () => {
       )}
 
       {/* Pagination */}
-      <nav aria-label="Page navigation example" className="mt-4">
+      <nav aria-label="Page navigation example" className="mt-4 flex justify-between items-center">
         <ul className="flex items-center -space-x-px h-8 text-sm">
           <li>
             <a 
@@ -194,6 +182,7 @@ const CancelTable = () => {
             </a>
           </li>
         </ul>
+        <span className="ml-4 text-m text-gray-600">Total Transaksi: Rp. {formatCurrency(calculateTotalCanceled())}</span>
       </nav>
     </div>
   );

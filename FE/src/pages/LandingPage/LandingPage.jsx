@@ -19,68 +19,100 @@ const LandingPage = () => {
 
   // Daftar produk
   const products = [
-    { id: 1, name: "Pupuk Organik A", description: "Pupuk ramah lingkungan untuk hasil maksimal." },
-    { id: 2, name: "Pupuk NPK B", description: "NPK seimbang untuk pertumbuhan optimal." },
-    { id: 3, name: "Pupuk Hayati C", description: "Meningkatkan kesehatan tanah dan tanaman." },
-    { id: 4, name: "Pupuk Cair D", description: "Solusi cepat untuk nutrisi tanaman." },
-    { id: 5, name: "Pupuk Ponsel E", description: "Memudahkan aplikasi pupuk di lahan." },
+    { id: 1, name: "Pupuk Urea", description: "Dengan kandungan nitrogen yang mencapai 46%, Pupuk Urea memberikan nutrisi yang intensif dan cepat diserap oleh tanaman, membantu mendorong pertumbuhan daun yang subur dan produktivitas yang optimal. " },
+    { id: 2, name: "Pupuk NPK", description: "Solusi pupuk komposisi seimbang yang mengandung Nitrogen (N), Fosfor (P), dan Kalium (K). Dirancang khusus untuk memenuhi kebutuhan nutrisi tanaman secara menyeluruh, Pupuk NPK mendukung pertumbuhan akar yang kuat, meningkatkan ketahanan tanaman, dan memperbaiki kualitas hasil panen." },
+    { id: 3, name: "Pupuk Cair", description: "Formulasi khusus kami memastikan unsur hara cepat diserap, mendukung pertumbuhan yang lebih cepat dan kekuatan tanaman yang lebih baik. Cocok untuk berbagai jenis tanaman, Pupuk Cair mengoptimalkan pemberian nutrisi melalui metode aplikasi yang praktis dan efisien." },
+    { id: 4, name: "Pupuk Kadang", description: "Tingkatkan kesuburan tanah dan kesehatan tanaman Anda dengan Pupuk Kandang, solusi organik yang kaya nutrisi. Terbuat dari limbah ternak, Pupuk Kandang memperbaiki struktur tanah, meningkatkan kapasitas retensi air, dan menyediakan unsur hara penting untuk pertumbuhan tanaman yang optimal. " },
+    { id: 5, name: "Pupuk Sapi", description: "Dapatkan hasil pertanian yang lebih sehat dan berkelanjutan dengan Pupuk Sapi, solusi pupuk organik yang kaya akan unsur hara. Diperkaya dengan nutrisi alami, Pupuk Sapi meningkatkan kesuburan tanah, mendukung pertumbuhan tanaman, dan memperbaiki struktur tanah. " },
   ];
 
-  return (
-    <div>
-      <Helmet>  
-        <title>TemanTani</title>
-      </Helmet>
-      <Navbar />
-      <div className="flex flex-col items-center justify-start min-h-screen bg-white text-gray-800 text-center p-4 pt-16">
-        <h1 className="text-4xl font-bold mb-4">Selamat Datang di TemanTani</h1>
-        <p className="text-xl mb-8 text-justify">
-          TemanTani telah berkomitmen untuk menjadi pionir dalam industri pupuk, 
-          menyediakan solusi yang inovatif dan ramah lingkungan sejak didirikan. 
-          Kami memahami tantangan yang dihadapi petani dalam aksesibilitas dan 
-          keberlanjutan produk pertanian, oleh karena itu kami berkolaborasi dengan 
-          berbagai stakeholders untuk mengembangkan pupuk berkualitas tinggi yang 
-          memenuhi kebutuhan spesifik tanaman dan menjaga ekosistem. Dengan memanfaatkan 
-          teknologi modern, kami tidak hanya menyediakan produk pupuk, tetapi juga 
-          menawarkan konsultasi untuk meningkatkan hasil pertanian, memastikan bahwa 
-          petani kami dapat memaksimalkan potensi lahan mereka dengan cara yang 
-          berkelanjutan. Bergabunglah dengan kami untuk menjadi bagian dari revolusi 
-          pertanian yang lebih baik dan lebih efisien.
+  
+    return (
+      <div>
+        <Helmet>
+          <title>TemanTani</title>
+        </Helmet>
+        <Navbar />
+        <div className="flex flex-col items-center justify-start min-h-screen bg-white text-gray-800 text-center p-4 pt-16">
+          <h1 className="text-4xl font-bold mb-4">Penuhi Kebutuhan Nutrisi Tanaman Anda dengan TemanTani</h1>
+          <p className="text-xl mb-8 text-justify">
+            TemanTani telah berkomitmen untuk menjadi pionir dalam industri pupuk, 
+            menyediakan solusi yang inovatif dan ramah lingkungan sejak didirikan. 
+            Kami memahami tantangan yang dihadapi petani dalam aksesibilitas dan 
+            keberlanjutan produk pertanian, oleh karena itu kami berkolaborasi dengan 
+            berbagai stakeholders untuk mengembangkan pupuk berkualitas tinggi yang 
+            memenuhi kebutuhan spesifik tanaman dan menjaga ekosistem. Dengan memanfaatkan 
+            teknologi modern, kami tidak hanya menyediakan produk pupuk, tetapi juga 
+            menawarkan konsultasi untuk meningkatkan hasil pertanian, memastikan bahwa 
+            petani kami dapat memaksimalkan potensi lahan mereka dengan cara yang 
+            berkelanjutan.
+          </p>
+    
+          <h2 className="text-3xl font-bold mb-6">Produk Kami</h2>
+    
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-screen-lg">
+  {products.map(product => (
+    <div key={product.id} className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+      <a href="#">
+        <img className="rounded-t-lg object-cover w-full h-48" src="./src/assets/contoh.jpg" alt={product.name} />
+      </a>
+      <div className="p-5">
+        <a href="#">
+          <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{product.name}</h5>
+        </a>
+        <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+          {product.description}
         </p>
-
-        <h2 className="text-3xl font-bold mb-6">Produk Kami</h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-screen-lg">
-          {products.map(product => (
-            <div key={product.id} className="max-w-sm rounded overflow-hidden shadow-lg bg-white">
-              <div className="px-6 py-4">
-                <div className="font-bold text-xl mb-2">{product.name}</div>
-                <p className="text-gray-700 text-base">
-                  {product.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Tambahkan margin atas untuk jarak lebih jauh */}
-        <button 
-          onClick={handleButtonClick} 
-          className="bg-blue-500 text-white px-6 py-3 rounded shadow hover:bg-gray-700 hover:text-white transition duration-200 mt-20"
-        >
-          Lebih dekat dengan kami
-        </button>
       </div>
-      {showForm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 max-w-lg w-full">
-            <button onClick={handleCloseModal} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✖️</button>
-            <FormCust onClose={handleCloseModal} />
-          </div>
-        </div>
-      )}
     </div>
-  );
-};
+  ))}
+</div>
 
+    
+          {/* Add the new paragraph above the button */}
+          <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 mt-10 mx-auto">
+  <a href="#">
+    {/* Add `object-cover` and height control to prevent blurriness */}
+    <img 
+      className="rounded-t-lg w-full h-64 object-cover" 
+      src="./src/assets/petani.jpg" 
+      alt="Petani Image" 
+    />
+  </a>
+  <div className="p-5 text-center">
+    <a href="#">
+      <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        Bergabunglah dengan kami
+      </h5>
+    </a>
+    <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+      Bergabunglah dengan kami untuk menjadi bagian dari revolusi pertanian yang lebih baik dan lebih efisien.
+    </p>
+    <button 
+      onClick={handleButtonClick} 
+      className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    >
+      Lebih dekat dengan kami
+      <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+
+        </div>
+    
+        {showForm && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white rounded-lg p-6 max-w-lg w-full">
+              <button onClick={handleCloseModal} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✖️</button>
+              <FormCust onClose={handleCloseModal} />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+    
 export default LandingPage;

@@ -27,7 +27,6 @@ function DataBaseInven() {
       <Helmet>
         <title>Super Admin</title>
       </Helmet> 
-    
     <div className="">
       <Sidebar />
       <InvenTable inventories={inventories} />

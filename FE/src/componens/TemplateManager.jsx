@@ -8,6 +8,10 @@ const TemplateManager = () => {
     const [editingTemplate, setEditingTemplate] = useState(null);
     const [message, setMessage] = useState('');
 
+    const itemsPerPage = 5;
+    const [currentPageSls, setCurrentPageSls] = useState(1);
+    const [currentPageCust, setCurrentPageCust] = useState(1);
+
     useEffect(() => {
         fetchTemplates();
     }, []);
@@ -108,6 +112,17 @@ const TemplateManager = () => {
         return type === 'sls' ? 'Sales' : 'Customer';
     };
 
+    // Pagination Logic
+    const totalPagesSls = Math.ceil(templatesSls.length / itemsPerPage);
+    const indexOfLastItemSls = currentPageSls * itemsPerPage;
+    const indexOfFirstItemSls = indexOfLastItemSls - itemsPerPage;
+    const currentSlsTemplates = templatesSls.slice(indexOfFirstItemSls, indexOfLastItemSls);
+
+    const totalPagesCust = Math.ceil(templatesCust.length / itemsPerPage);
+    const indexOfLastItemCust = currentPageCust * itemsPerPage;
+    const indexOfFirstItemCust = indexOfLastItemCust - itemsPerPage;
+    const currentCustTemplates = templatesCust.slice(indexOfFirstItemCust, indexOfLastItemCust);
+
     return (
         <div className="p-4">
             <h2 className="text-lg font-bold mb-4">Kelola Template</h2>
@@ -125,6 +140,7 @@ const TemplateManager = () => {
                 />
             )}
             
+            {/* Tabel untuk Sales Templates */}
             <div className="overflow-x-auto">
                 <table className="min-w-full mx-auto bg-white border border-gray-200 rounded-lg shadow-md">
                     <thead>
@@ -136,7 +152,7 @@ const TemplateManager = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {templatesSls.map((template) => (
+                        {currentSlsTemplates.map((template) => (
                             <tr key={template.id}>
                                 <td className="border-b py-2 text-center max-w-xs overflow-x-auto whitespace-nowrap">{template.template}</td>
                                 <td className="border-b py-2 text-center">{getTypeLabel(template.type)}</td>
@@ -168,6 +184,24 @@ const TemplateManager = () => {
                         ))}
                     </tbody>
                 </table>
+                {/* Pagination for Sales Templates */}
+                <div className="flex justify-between mt-4">
+                    <a 
+                      href="#" 
+                      onClick={() => currentPageSls > 1 && setCurrentPageSls(currentPageSls - 1)} 
+                      className={`flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 border border-gray-300 rounded-lg ${currentPageSls === 1 ? 'pointer-events-none text-gray-300' : ''}`}
+                    >
+                      Previous
+                    </a>
+
+                    <a 
+                      href="#" 
+                      onClick={() => currentPageSls < totalPagesSls && setCurrentPageSls(currentPageSls + 1)} 
+                      className={`flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 border border-gray-300 rounded-lg ${currentPageSls === totalPagesSls ? 'pointer-events-none text-gray-300' : ''}`}
+                    >
+                      Next
+                    </a>
+                </div>
             </div>
 
             {/* Tabel untuk Customer Templates */}
@@ -183,7 +217,7 @@ const TemplateManager = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {templatesCust.map((template) => (
+                        {currentCustTemplates.map((template) => (
                             <tr key={template.id}>
                                 <td className="border-b py-2 text-center max-w-xs overflow-x-auto whitespace-nowrap">{template.template}</td>
                                 <td className="border-b py-2 text-center">{getTypeLabel(template.type)}</td>
@@ -215,6 +249,24 @@ const TemplateManager = () => {
                         ))}
                     </tbody>
                 </table>
+                {/* Pagination for Customer Templates */}
+                <div className="flex justify-between mt-4">
+                    <a 
+                      href="#" 
+                      onClick={() => currentPageCust > 1 && setCurrentPageCust(currentPageCust - 1)} 
+                      className={`flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 border border-gray-300 rounded-lg ${currentPageCust === 1 ? 'pointer-events-none text-gray-300' : ''}`}
+                    >
+                      Previous
+                    </a>
+
+                    <a 
+                      href="#" 
+                      onClick={() => currentPageCust < totalPagesCust && setCurrentPageCust(currentPageCust + 1)} 
+                      className={`flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 border border-gray-300 rounded-lg ${currentPageCust === totalPagesCust ? 'pointer-events-none text-gray-300' : ''}`}
+                    >
+                      Next
+                    </a>
+                </div>
             </div>
         </div>
     );

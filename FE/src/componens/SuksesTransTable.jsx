@@ -36,7 +36,7 @@ const SuksesTable = () => {
   }, []);
 
   const successfulSalesData = salesData.filter(sale => sale.status.toLowerCase() === 'terkirim');
-  
+
   const totalPages = Math.ceil(successfulSalesData.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -60,14 +60,12 @@ const SuksesTable = () => {
     return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
   };
 
+  const totalTransaksi = successfulSalesData.reduce((total, sale) => total + parseFloat(sale.total_transaksi), 0);
+
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-4xl ml-8">
-      <p className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Tabel Transaksi Sukses</p>
-        <div className="mt-2">
-          <span className="font-bold">Total Transaksi Sukses: {`Rp. ${formatCurrency(successfulSalesData.reduce((total, sale) => total + parseFloat(sale.total_transaksi), 0))}`}</span>
-        </div>
-        
+        <p className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Tabel Transaksi Sukses</p>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -87,16 +85,7 @@ const SuksesTable = () => {
                 <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={sale.id_transaksi}>
                   <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{sale.id_transaksi}</th>
                   <td className="px-6 py-4">{sale.customer_name}</td>
-                  <td className="px-6 py-4">
-                    <a 
-                      href={`https://wa.me/62${sale.phone}?text=Halo%20${encodeURIComponent(sale.customer_name)},%20perkenalkan%20saya%20Bimo%20dari%20Teman%20Tani.%20Terima kasih%20sudah%20menjadi%20bagian%20Teman%20Tani.%20Jikalau%20berkenan%20kami%20ingin%20meminta%20feedback%20dari%20layanan%20kami.%20Terima%20kasih.`}
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="text-blue-600 hover:underline"
-                    >
-                      {sale.phone}
-                    </a>
-                  </td>
+                  <td className="px-6 py-4">{sale.phone}</td> {/* Menghapus hyperlink */}
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-between">
                       <span>Rp.</span>
@@ -153,7 +142,7 @@ const SuksesTable = () => {
         )}
 
         {/* Pagination */}
-        <nav aria-label="Page navigation example" className="mt-4">
+        <nav aria-label="Page navigation example" className="mt-4 flex justify-between items-center">
           <ul className="flex items-center -space-x-px h-8 text-sm">
             <li>
               <a 
@@ -191,6 +180,7 @@ const SuksesTable = () => {
               </a>
             </li>
           </ul>
+          <span className="ml-2 text-m text-gray-600">Total Transaksi: Rp. {formatCurrency(totalTransaksi)}</span>
         </nav>
       </div>
     </div>

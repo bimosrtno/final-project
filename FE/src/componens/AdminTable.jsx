@@ -47,12 +47,14 @@ const AdminTable = () => {
                 isActive: newStatus,
             });
             alert('Status pengguna berhasil diubah!');
+
             // Update daftar pengguna tanpa mengubah urutannya
-            setUsers(prevUsers => 
-                prevUsers.map(user => 
+            setUsers(prevUsers => {
+                const updatedUsers = prevUsers.map(user => 
                     user.id === userId ? { ...user, is_active: newStatus } : user
-                )
-            );
+                );
+                return updatedUsers; // Tidak dirubah urutannya
+            });
         } catch (error) {
             alert('Error changing status: ' + error.message);
         }
@@ -65,6 +67,9 @@ const AdminTable = () => {
     if (error) {
         return <div>{error}</div>;
     }
+
+    // Urutkan data, dengan pengguna terbaru di atas dan tanpa mengubah urutan ketika ada update
+    const sortedUsers = [...users].reverse(); // Balik untuk menampilkan data terbaru di atas
 
     return (
         <div>
@@ -87,7 +92,7 @@ const AdminTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user, index) => (
+                        {sortedUsers.map((user, index) => (
                             <tr key={user.id} className={`odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800 border-b dark:border-gray-700`}>
                                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{user.nama}</td>
                                 <td className="px-6 py-4">{user.nomor}</td>

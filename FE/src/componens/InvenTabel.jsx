@@ -8,7 +8,7 @@ const formatCurrency = (amount) => {
 function InvenTable({ inventories }) {
   return (
     <div>
-      <h2>Inventori Table</h2>
+      <h2>Tabel Stok barang</h2>
       <table border="1" style={{ marginTop: '20px', width: '100%' }}>
         <thead>
           <tr>

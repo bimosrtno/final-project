@@ -47,7 +47,8 @@ function SearchBar() {
           placeholder="Cari Transaksi Disini"
           required
         />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded-r-md">
+        {/* Make the button wider */}
+        <button type="submit" className="bg-blue-500 text-white p-2 w-28 rounded-r-md">
           Cari
         </button>
       </form>

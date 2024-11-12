@@ -25,6 +25,7 @@ const CustomerTable = () => {
       }
     };
 
+    //template cust
     const fetchActiveTemplates = async () => {
       try {
         // Ambil template bertipe 'cust' yang aktif

@@ -20,10 +20,16 @@ const TemplateManager = () => {
         try {
             const responseSls = await fetch('http://localhost:5000/api/templates/sls');
             const responseCust = await fetch('http://localhost:5000/api/templates/cust');
+
             const dataSls = await responseSls.json();
             const dataCust = await responseCust.json();
-            setTemplatesSls(dataSls);
-            setTemplatesCust(dataCust);
+
+            // Mengurutkan data berdasarkan waktu pembuatan (misalnya, dari yang terbaru)
+            const sortedSls = dataSls.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const sortedCust = dataCust.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            setTemplatesSls(sortedSls);
+            setTemplatesCust(sortedCust);
         } catch (error) {
             setMessage('Gagal memuat template');
         }
@@ -101,8 +107,20 @@ const TemplateManager = () => {
                 throw new Error('Gagal mengubah status template');
             }
 
+            // Update status di dalam state tanpa memanggil fetchTemplates lagi
+            setTemplatesSls((prev) =>
+                prev.map((template) => 
+                    template.id === id ? { ...template, is_active: isActive } : template
+                )
+            );
+
+            setTemplatesCust((prev) =>
+                prev.map((template) => 
+                    template.id === id ? { ...template, is_active: isActive } : template
+                )
+            );
+
             setMessage('Status template berhasil diubah');
-            fetchTemplates();
         } catch (error) {
             setMessage(error.message);
         }

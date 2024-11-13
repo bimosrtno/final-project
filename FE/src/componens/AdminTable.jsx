@@ -92,20 +92,24 @@ const AdminTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedUsers.map((user, index) => (
+                        {sortedUsers.map((user) => (
                             <tr key={user.id} className={`odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800 border-b dark:border-gray-700`}>
                                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{user.nama}</td>
                                 <td className="px-6 py-4">{user.nomor}</td>
                                 <td className="px-6 py-4">{user.username}</td>
                                 <td className="px-6 py-4">{user.role}</td>
                                 <td className="px-6 py-4">
-                                    <select 
-                                        value={user.is_active ? 'Aktif' : 'Non Aktif'}
-                                        onChange={(e) => handleChangeStatus(user.id, user.is_active)}
-                                    >
-                                        <option value='Aktif'>Aktif</option>
-                                        <option value='Non Aktif'>Non Aktif</option>
-                                    </select>
+                                    {user.role === 'superadmin' ? (
+                                        <span className="text-gray-500">Aktif</span>
+                                    ) : (
+                                        <select 
+                                            value={user.is_active ? 'Aktif' : 'Non Aktif'}
+                                            onChange={(e) => handleChangeStatus(user.id, user.is_active)}
+                                        >
+                                            <option value='Aktif'>Aktif</option>
+                                            <option value='Non Aktif'>Non Aktif</option>
+                                        </select>
+                                    )}
                                 </td>
                                 <td className="px-6 py-4">
                                     <button 

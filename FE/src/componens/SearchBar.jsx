@@ -3,7 +3,6 @@ import axios from 'axios';
 
 function SearchBar() {
   const [transactionId, setTransactionId] = useState('');
-  const [transactions, setTransactions] = useState([]);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -13,8 +12,10 @@ function SearchBar() {
       .then(response => {
         if (response.data.length === 0) {
           alert('Transaksi tidak ditemukan.');
+          setShowModal(false);  // Menutup modal jika tidak ada data
         } else {
-          setTransactions(response.data);
+          setSelectedTransaction(response.data[0]); // Ambil transaksi pertama
+          setShowModal(true); // Tampilkan modal
           console.log("Data Transaksi:", response.data);
         }
       })
@@ -24,48 +25,37 @@ function SearchBar() {
       });
   };
 
-  const handleTransactionClick = (transaction) => {
-    console.log("Transaction Selected:", transaction);
-    setSelectedTransaction(transaction);
-    setShowModal(true);
-    setTransactions([]); // Mengosongkan daftar transaksi setelah memilih
-  };
-
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedTransaction(null);
   };
 
   return (
-    <div className="max-w-md mx-auto mt-4">
-      <form onSubmit={handleSearch} className="flex">
-        <input
-          type="text"
-          value={transactionId}
-          onChange={(e) => setTransactionId(e.target.value)}
-          className="border rounded-l-md p-2 w-full"
-          placeholder="Cari Transaksi Disini"
-          required
-        />
-        {/* Make the button wider */}
-        <button type="submit" className="bg-blue-500 text-white p-2 w-28 rounded-r-md">
-          Cari
-        </button>
+    <div className="max-w-screen flex justify-center mt-4">
+      <form className="max-w-md mx-auto" onSubmit={handleSearch}>
+        <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+            </svg>
+          </div>
+          <input 
+            type="search" 
+            id="default-search" 
+            value={transactionId} 
+            onChange={(e) => setTransactionId(e.target.value)} 
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch(e);
+              }
+            }} 
+            className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" 
+            placeholder="Cari Transaksi Disini" 
+            required 
+          />
+        </div>
       </form>
-
-      {transactions.length > 0 && (
-        <ul className="mt-2">
-          {transactions.map((transaction) => (
-            <li 
-              key={transaction.id_transaksi} 
-              className="border rounded p-2 mt-1 cursor-pointer hover:bg-blue-100" 
-              onClick={() => handleTransactionClick(transaction)}
-            >
-              ID: {transaction.id_transaksi} - {transaction.customer_name}
-            </li>
-          ))}
-        </ul>
-      )}
 
       {showModal && selectedTransaction && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

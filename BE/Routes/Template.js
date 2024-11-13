@@ -23,7 +23,7 @@ router.get('/:type', async (req, res) => {
     }
 });
 
-// Mengambil template aktif
+// Mengambil template aktif bertipe 'sls'
 router.get('/sls/active', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM templates WHERE is_active = TRUE AND type = $1', ['sls']);

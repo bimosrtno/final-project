@@ -68,9 +68,10 @@ const CustData = () => {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
-  };
+    if (amount === null || amount === undefined) return 'Rp.0';
 
+    return `Rp.${new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(amount)}`;
+};
   // Hitung customers untuk ditampilkan di halaman saat ini
   const indexOfLastCustomer = currentPage * PAGE_SIZE;
   const indexOfFirstCustomer = indexOfLastCustomer - PAGE_SIZE;

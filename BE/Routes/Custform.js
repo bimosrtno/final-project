@@ -87,12 +87,13 @@ router.get('/:customerId/transactions', async (req, res) => {
             FROM 
                 sales 
             WHERE 
-                id_customer = $1
+                id_customer = $1 AND
+                status = 'terkirim'
         `;
         const result = await pool.query(transactionQuery, [customerId]);
 
-        if (result.rows.length === 0) {
-            return res.status(404).json('Customer not found or no transactions');
+        if (result.rows.length === 0 || result.rows[0].total_count === 0) {
+            return res.status(404).json('Customer not found or no transactions with status "terkirim"');
         }
 
         res.json({

@@ -6,6 +6,8 @@ const TopSale = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+
+    // Fungsi untuk mengambil data top sale
     useEffect(() => {
         const fetchTopSale = async () => {
             try {
@@ -23,6 +25,7 @@ const TopSale = () => {
             }
         };
 
+        // Fungsi untuk mengambil data top customer
         const fetchTopCustomer = async () => {
             try {
                 const response = await fetch('http://localhost:5000/api/sales/top-customer'); // Ini sudah benar
@@ -40,12 +43,13 @@ const TopSale = () => {
         fetchTopSale();
         fetchTopCustomer();
     }, []);
-
+    
+    //Format rupiah
     const formatRupiah = (amount) => {
-        return new Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR",
-        }).format(amount);
+        return `Rp.${new Intl.NumberFormat("id-ID", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(amount)}`;
     };
 
     if (loading) return <p>Loading...</p>;

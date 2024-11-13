@@ -31,20 +31,20 @@ const LandingPage = () => {
       </Helmet>
 
       {/* Jumbotron Section */}
-<section className="bg-white dark:bg-gray-900 bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')] relative">
-  <div className="absolute top-4 right-4 z-20 mt-1 mb-10"> {/* Menambahkan margin-top di sini */}
-    <SearchBar />
-  </div>
-  <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 z-10 relative">
-    <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-      Penuhi Kebutuhan Nutrisi Tanaman Anda dengan TemanTani
-    </h1>
-    <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-200">
-      TemanTani berkomitmen untuk menjadi pionir dalam industri pupuk, menyediakan solusi inovatif dan ramah lingkungan. Kami berkolaborasi dengan berbagai stakeholders untuk mengembangkan pupuk berkualitas tinggi yang memenuhi kebutuhan spesifik tanaman, menjaga ekosistem, dan meningkatkan hasil pertanian berkelanjutan.
-    </p>
-  </div>
-  <div className="bg-gradient-to-b from-blue-50 to-transparent dark:from-blue-900 w-full h-full absolute top-0 left-0 z-0"></div>
-</section>
+      <section className="bg-white dark:bg-gray-900 bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')] relative">
+        <div className="absolute top-4 left-4 z-20"> {/* Pindahkan ke kiri atas */}
+          <SearchBar />
+        </div>
+        <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 z-10 relative">
+          <h1 className="mb-4 mt-10 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+            Penuhi Kebutuhan Nutrisi Tanaman Anda dengan TemanTani
+          </h1>
+          <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-200">
+            TemanTani berkomitmen untuk menjadi pionir dalam industri pupuk, menyediakan solusi inovatif dan ramah lingkungan. Kami berkolaborasi dengan berbagai stakeholders untuk mengembangkan pupuk berkualitas tinggi yang memenuhi kebutuhan spesifik tanaman, menjaga ekosistem, dan meningkatkan hasil pertanian berkelanjutan.
+          </p>
+        </div>
+        <div className="bg-gradient-to-b from-blue-50 to-transparent dark:from-blue-900 w-full h-full absolute top-0 left-0 z-0"></div>
+      </section>
 
       {/* Produk */}
       <div className="flex flex-col items-center justify-start min-h-screen bg-white text-gray-800 text-center p-4 pt-16">

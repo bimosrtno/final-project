@@ -3,17 +3,16 @@ import { Link } from 'react-router-dom';
 import '../CSS/Sidebar.css';
 
 const Sidebar = () => {
-  const [isDatabaseOpen, setDatabaseOpen] = useState(false);
-  const [isOprasionalOpen, setOprasionalOpen] = useState(false);
+  const [openMenus, setOpenMenus] = useState({
+    database: false,
+    oprasional: false,
+  });
 
-  const toggleDatabase = () => {
-    setDatabaseOpen(!isDatabaseOpen);
-    setOprasionalOpen(false);
-  };
-
-  const toggleOprasional = () => {
-    setOprasionalOpen(!isOprasionalOpen);
-    setDatabaseOpen(false);
+  const toggleMenu = (menu) => {
+    setOpenMenus((prev) => ({
+      ...prev,
+      [menu]: !prev[menu], // Toggle the current menu
+    }));
   };
 
   return (
@@ -24,19 +23,19 @@ const Sidebar = () => {
         <li>
           <Link 
             to="/super-admin" 
-            className="text-gray-300 bg-transparent hover:text-white focus:ring-0 font-medium rounded-lg text-sm px-5 py-2.5 w-full text-left"
+            className="text-gray-300 bg-transparent hover:text-white focus:ring-0 font-medium rounded-lg text-m px-5 py-2.5 w-full text-left"
           >
             Performance 
           </Link>
         </li>
         <li>
-          <button onClick={toggleDatabase} className="flex items-center w-full text-left py-2 bg-transparent text-gray-300 hover:text-white focus:outline-none">
+          <button onClick={() => toggleMenu('database')} className="flex items-center w-full text-left py-2 bg-transparent text-gray-300 hover:text-white focus:outline-none">
             <span className="flex-1">Database</span>
             <svg className="w-3 h-3" aria-hidden="true" fill="none" viewBox="0 0 10 6">
               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
             </svg>
           </button>
-          {isDatabaseOpen && (
+          {openMenus.database && (
             <ul className="mt-2 bg-transparent rounded pl-4">
               <li>
                 <Link to="/super-admin/database-inventoris" className="block px-4 py-2 text-gray-300 hover:text-white focus:outline-none">
@@ -53,13 +52,13 @@ const Sidebar = () => {
         </li>
         
         <li>
-          <button onClick={toggleOprasional} className="flex items-center w-full text-left py-2 bg-transparent text-gray-300 hover:text-white focus:outline-none">
+          <button onClick={() => toggleMenu('oprasional')} className="flex items-center w-full text-left py-2 bg-transparent text-gray-300 hover:text-white focus:outline-none">
             <span className="flex-1">Operasional</span>
             <svg className="w-3 h-3" aria-hidden="true" fill="none" viewBox="0 0 10 6">
               <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
             </svg>
           </button>
-          {isOprasionalOpen && (
+          {openMenus.oprasional && (
             <ul className="mt-2 bg-transparent rounded pl-4">
               <li>
                 <Link to="/super-admin/admin" className="block px-4 py-2 text-gray-300 hover:text-white focus:outline-none">
@@ -77,7 +76,7 @@ const Sidebar = () => {
         
         <li>
           <button 
-            className="flex items-center w-full text-left py-2 bg-transparent text-gray-300 hover:text-white focus:outline-none rounded-lg text-sm px-5"
+            className="flex items-center w-full text-left py-2 bg-transparent text-gray-300 hover:text-white focus:outline-none rounded-lg text-m px-5"
             onClick={() => window.location.href = '/login'} // Menggunakan navigasi untuk Log Out
           >
             Log Out

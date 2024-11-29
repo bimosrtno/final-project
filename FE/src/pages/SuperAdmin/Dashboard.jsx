@@ -23,21 +23,25 @@ function DataBaseInven() {
   }, []);
 
   return (
-    <div> 
+    <div className="flex h-screen bg-gray-800"> {/* Mengatur layout flex untuk seluruh halaman */}
       <Helmet>
         <title>Super Admin</title>
-      </Helmet> 
-    <div className="">
-      <Sidebar />
-      <InvenTable inventories={inventories} />
-
-      {/* Flex container for buttons */}
-      <div className="flex space-x-2 p-4">
-        <AddProduct setInventories={setInventories} />
-        <DeleteProduct setInventories={setInventories} />
+      </Helmet>
+      <div className="w-56"> {/* Sidebar dengan lebar tetap */}
+        <Sidebar />
       </div>
-    </div>
-
+      <div className="flex-1 bg-gray-800 pl-0 mr-5 pr-5 pt-10 overflow-y-auto"> {/* Area konten utama */}
+        <div className="overflow-y-auto"> {/* Membuat konten scrollable secara vertikal */}
+          <div className="overflow-x-auto"> {/* Membuat konten scrollable secara horizontal */}
+            <InvenTable inventories={inventories} />
+            {/* Wrapper untuk tombol */}
+            <div className="flex flex-row justify-start items-center gap-x-4 mt-4"> {/* Flex container untuk tombol */}
+              <AddProduct setInventories={setInventories} />
+              <DeleteProduct setInventories={setInventories} />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-const CancelTable = () => {
+const TransTable = () => {
   const [salesData, setSalesData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedSale, setSelectedSale] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filterStatus, setFilterStatus] = useState('');
 
   const itemsPerPage = 5;
 
@@ -34,19 +35,17 @@ const CancelTable = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const canceledSalesData = salesData.filter(sale => sale.status.toLowerCase() === 'batal');
+  const filteredSalesData = filterStatus
+    ? salesData.filter(sale => sale.status.toLowerCase() === filterStatus.toLowerCase())
+    : salesData;
 
-  const totalPages = Math.ceil(canceledSalesData.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredSalesData.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = canceledSalesData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredSalesData.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-  };
-
-  const calculateTotalCanceled = () => {
-    return canceledSalesData.reduce((total, sale) => total + parseFloat(sale.total_transaksi), 0);
   };
 
   const formatCurrency = (amount) => {
@@ -63,36 +62,54 @@ const CancelTable = () => {
     setSelectedSale(null);
   };
 
+  const handleFilterChange = (event) => {
+    setFilterStatus(event.target.value);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="ml-8">
-      <p className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Tabel Transaksi Batal</p>
+      {/* Dropdown untuk Filter */}
+      <div className="mb-4">
+        <label className="mr-2 text-sm font-medium text-gray-700">Filter Status:</label>
+        <select
+          value={filterStatus}
+          onChange={handleFilterChange}
+          className="border border-gray-300 rounded-lg text-sm p-2 h-10"
+        >
+          <option value="">Semua</option>
+          <option value="Terkirim">Terkirim</option>
+          <option value="Batal">Batal</option>
+        </select>
+      </div>
+
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"> {/* Latar belakang tabel */}
+      <thead className="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-300 dark:text-gray-400"> {/* Warna latar belakang header dan teks */}
             <tr>
+              <th scope="col" className="px-6 py-3">Tanggal</th>
               <th scope="col" className="px-6 py-3">ID Transaksi</th>
               <th scope="col" className="px-6 py-3">Nama Customer</th>
               <th scope="col" className="px-6 py-3">No. HP</th>
               <th scope="col" className="px-6 py-3">Total Transaksi</th>
-              <th scope="col" className="px-6 py-3">Note</th>
-              <th scope="col" className="px-6 py-3">Tanggal</th>
+              <th scope="col" className="px-6 py-3">Status</th>
               <th scope="col" className="px-6 py-3">Detail</th>
             </tr>
           </thead>
           <tbody>
             {currentItems.map((sale) => (
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={sale.id_transaksi}>
+              <tr className="bg-gray-200 border-b text-gray-800 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600" key={sale.id_transaksi}>
+                <td className="px-6 py-4">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{sale.id_transaksi}</td>
                 <td className="px-6 py-4">{sale.customer_name}</td>
-                <td className="px-6 py-4">{sale.phone}</td> {/* Mengubah hyperlink menjadi teks biasa */}
+                <td className="px-6 py-4">{sale.phone}</td>
                 <td className="px-6 py-4">
                   <div className="flex justify-between">
                     <span>Rp.</span>
                     <span>{formatCurrency(sale.total_transaksi)}</span>
                   </div>
                 </td>
-                <td className="px-6 py-4">{sale.note}</td>
-                <td className="px-6 py-4">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
+                <td className="px-6 py-4">{sale.status}</td>
                 <td className="px-6 py-4">
                   <button 
                     onClick={() => openModal(sale)} 
@@ -124,18 +141,43 @@ const CancelTable = () => {
               </div>
               <div className="p-4">
                 {selectedSale && (
-                  <div>
-                    <p><strong>Tanggal:</strong> {new Date(selectedSale.date).toLocaleDateString('id-ID')}</p>
-                    <p><strong>ID Transaksi:</strong> {selectedSale.id_transaksi}</p>
-                    <p><strong>Nama Customer:</strong> {selectedSale.customer_name}</p>
-                    <p><strong>No HP:</strong> {selectedSale.phone}</p>
-                    <p><strong>Alamat:</strong> {selectedSale.address}</p>
-                    <p><strong>Produk:</strong> {selectedSale.nama_produk.join(", ")}</p>
-                    <p><strong>Quantity:</strong> {selectedSale.quantity.join(", ")}</p>
-                    <p><strong>Total Transaksi:</strong> Rp. {formatCurrency(selectedSale.total_transaksi)}</p>
-                    <p><strong>Status:</strong> {selectedSale.status}</p>
-                    <p><strong>Note:</strong> {selectedSale.note}</p>
-                  </div>
+                  <form>
+                    <div className="grid gap-6 mb-6 md:grid-cols-2">
+                      {/* Isi form detail transaksi */}
+                      <div>
+                        <label htmlFor="customer_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Customer</label>
+                        <input type="text" id="customer_name" value={selectedSale.customer_name} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readOnly />
+                      </div>
+                      <div>
+                        <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No HP</label>
+                        <input type="tel" id="phone" value={selectedSale.phone} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readOnly />
+                      </div>
+                      <div>
+                        <label htmlFor="total_transaksi" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total Transaksi</label>
+                        <input type="text" id="total_transaksi" value={`Rp. ${formatCurrency(selectedSale.total_transaksi)}`} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readOnly />
+                      </div>
+                      <div>
+                        <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alamat</label>
+                        <input type="text" id="address" value={selectedSale.address} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readOnly />
+                      </div>
+                      <div>
+                        <label htmlFor="products" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Produk</label>
+                        <input type="text" id="products" value={selectedSale.nama_produk.join(", ")} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readOnly />
+                      </div>
+                      <div>
+                        <label htmlFor="status" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
+                        <input type="text" id="status" value={selectedSale.status} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readOnly />
+                      </div>
+                      <div>
+                        <label htmlFor="shipping_service" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jasa Pengiriman</label>
+                        <input type="text" id="shipping_service" value={selectedSale.pengiriman} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readOnly />
+                      </div>
+                      <div>
+                        <label htmlFor="tracking_number" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Resi Pengiriman</label>
+                        <input type="text" id="tracking_number" value={selectedSale.no_resi} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" readOnly />
+                      </div>
+                    </div>
+                  </form>
                 )}
               </div>
             </div>
@@ -182,10 +224,9 @@ const CancelTable = () => {
             </a>
           </li>
         </ul>
-        <span className="ml-4 text-m text-gray-600">Total Transaksi: Rp. {formatCurrency(calculateTotalCanceled())}</span>
       </nav>
     </div>
   );
 };
 
-export default CancelTable;
+export default TransTable;

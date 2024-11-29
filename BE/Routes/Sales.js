@@ -13,7 +13,6 @@ async function getLastTransactionId() {
     }
 }
 
-
 // Route GET untuk mengambil data sales berdasarkan ID transaksi
 router.get('/', async (req, res) => {
     const { transactionId } = req.query; // Mengambil transactionId dari query
@@ -37,9 +36,6 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Gagal mengambil data sales', details: error.message });
     }
 });
-
-
-
 
 // Route POST untuk menambahkan sales baru
 router.post('/', async (req, res) => {
@@ -127,17 +123,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Route GET untuk mengambil data sales
-router.get('/', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM sales');
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Error fetching sales data:', error);
-        res.status(500).json({ error: 'Gagal mengambil data sales', details: error.message });
-    }
-});
-
 // Route untuk mengupdate status transaksi di tabel sales
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
@@ -166,28 +151,59 @@ router.put('/:id', async (req, res) => {
 
 // Route untuk membatalkan transaksi dengan mengubah status dan menambahkan note
 router.put('/cancel/:id', async (req, res) => {
-  const { id } = req.params;
-  const { note } = req.body;
+    const { id } = req.params;
+    const { note } = req.body;
 
-  if (!note) {
-      return res.status(400).json({ error: 'Note tidak valid' });
-  }
+    if (!note) {
+        return res.status(400).json({ error: 'Note tidak valid' });
+    }
 
-  try {
-      const result = await pool.query(
-          'UPDATE sales SET status = $1, note = $2 WHERE id_transaksi = $3 RETURNING *',
-          ['Batal', note, id]
-      );
+    try {
+        const result = await pool.query(
+            'UPDATE sales SET status = $1, note = $2 WHERE id_transaksi = $3 RETURNING *',
+            ['Batal', note, id]
+        );
 
-      if (result.rowCount === 0) {
-          return res.status(404).json({ error: 'ID Transaksi tidak ditemukan' });
-      }
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'ID Transaksi tidak ditemukan' });
+        }
 
-      res.json(result.rows[0]);
-  } catch (error) {
-      console.error('Error updating status and note:', error);
-      res.status(500).json({ error: 'Internal Server Error', details: error.message });
-  }
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Error updating status and note:', error);
+        res.status(500).json({ error: 'Internal Server Error', details: error.message });
+    }
+});
+
+// Update endpoint untuk mengupdate status dan menyimpan jasa pengiriman dan nomor resi
+router.put('/sales/:idTransaksi', async (req, res) => {
+    const { idTransaksi } = req.params;  // Mengambil idTransaksi dari URL
+    const { status, pengiriman, no_resi } = req.body;  // Mengambil data dari body request
+
+    // Validasi input
+    if (!status || !pengiriman || !no_resi) {
+        return res.status(400).json({ error: 'Status, pengiriman, atau nomor resi tidak valid' });
+    }
+
+    try {
+        // Query untuk memperbarui status, pengiriman, dan nomor resi
+        const result = await pool.query(`
+            UPDATE sales 
+            SET status = $1, pengiriman = $2, no_resi = $3 
+            WHERE id_transaksi = $4
+            RETURNING *
+        `, [status, pengiriman, no_resi, idTransaksi]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Transaksi tidak ditemukan' });
+        }
+
+        // Mengirimkan respons sukses dengan data yang sudah diperbarui
+        res.status(200).json({ message: 'Status dan informasi pengiriman berhasil diperbarui' });
+    } catch (error) {
+        console.error('Error updating sales data:', error);
+        res.status(500).send('Kesalahan server');
+    }
 });
 
 // Route GET untuk mendapatkan ID transaksi terakhir
@@ -246,4 +262,5 @@ router.get('/top-customer', async (req, res) => {
         res.status(500).json({ error: 'Database query failed' });
     }
 });
+
 module.exports = router;

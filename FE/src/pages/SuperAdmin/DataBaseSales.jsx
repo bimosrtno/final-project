@@ -1,23 +1,24 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import CancelTable from '../../componens/CancelTable';
+import TransTable from '../../componens/TransTable';
 import Sidebar from '../../componens/SideBar';
-import SuksesTable from '../../componens/SuksesTransTable';
-import '../../CSS/bodyadmin.css';
 
 function DataBaseSales() {
   return (
-    <div> 
-    <Helmet>
-      <title>Super Admin</title>
-    </Helmet>
-    <div className="body.admin">
- <Sidebar />  
-      <SuksesTable className="mb-6" /> {/* Tambahkan margin bottom untuk memberi jarak */}
-      <div className='mt-10'> {/* Tambahkan margin top 4 */}
-      <CancelTable/> 
+    <div className="flex h-screen bg-gray-800"> {/* Layout utama dengan flex */}
+      <Helmet>
+        <title>Super Admin</title>
+      </Helmet>
+      <div className="w-56"> {/* Sidebar dengan lebar tetap */}
+        <Sidebar />
       </div>
-    </div>
+      <div className="flex-1 bg-gray-800 pl-0 mr-10 pr-5 pt-5 overflow-y-auto"> {/* Area konten utama */}
+        <div className="overflow-y-auto"> {/* Konten scrollable secara vertikal */}
+          <div className="overflow-x-auto"> {/* Konten scrollable secara horizontal */}
+            <TransTable className="mb-6" /> {/* Tambahkan margin bottom untuk memberi jarak */}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

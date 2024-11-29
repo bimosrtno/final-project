@@ -6,6 +6,8 @@ const AdminTable = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 4; // Misalnya 10 item per halaman
 
     const fetchUsers = async () => {
         try {
@@ -71,17 +73,23 @@ const AdminTable = () => {
     // Urutkan data, dengan pengguna terbaru di atas dan tanpa mengubah urutan ketika ada update
     const sortedUsers = [...users].reverse(); // Balik untuk menampilkan data terbaru di atas
 
+    // Pagination Logic
+    const indexOfLastUser = currentPage * itemsPerPage;
+    const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+    const currentUsers = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
+    const totalPages = Math.ceil(sortedUsers.length / itemsPerPage);
+
     return (
         <div>
-            <p className="text-4xl font-semibold text-gray-900 dark:text-white mb-6">Daftar Admin</p>
+            <p className="text-4xl font-semibold text-white  mt-2 mb-6">Daftar Admin</p>
             
             <div className="mb-3">
                 <AddAdminForm />
             </div>
             
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-300 dark:text-gray-400">
                         <tr>
                             <th scope="col" className="px-6 py-3">Nama</th>
                             <th scope="col" className="px-6 py-3">Nomor</th>
@@ -92,8 +100,8 @@ const AdminTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedUsers.map((user) => (
-                            <tr key={user.id} className={`odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800 border-b dark:border-gray-700`}>
+                        {currentUsers.map((user) => (
+                            <tr key={user.id} className={`bg-gray-200 border-b text-gray-800 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600`}>
                                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{user.nama}</td>
                                 <td className="px-6 py-4">{user.nomor}</td>
                                 <td className="px-6 py-4">{user.username}</td>
@@ -114,7 +122,7 @@ const AdminTable = () => {
                                 <td className="px-6 py-4">
                                     <button 
                                         type="button" 
-                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                                        className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                                         onClick={() => handleResetPassword(user.id)}
                                     >
                                         Reset Password
@@ -124,6 +132,30 @@ const AdminTable = () => {
                         ))}
                     </tbody>
                 </table>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex justify-between mt-4">
+                <a 
+                    href="#" 
+                    className="flex items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                >
+                    <svg className="w-3.5 h-3.5 me-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 5H1m0 0 4 4M1 5l4-4" />
+                    </svg>
+                    Previous
+                </a>
+                <a 
+                    href="#" 
+                    className="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                >
+                    Next
+                    <svg className="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+                    </svg>
+                </a>
             </div>
         </div>
     );

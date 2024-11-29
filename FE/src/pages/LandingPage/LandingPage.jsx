@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
-import SearchBar from "../../componens/SearchBar"; 
-import "../../CSS/Navbar.css";
-import "../../CSS/Body.css";
-import FormCust from "../../componens/FormCust"; 
+import SearchBar from "../../componens/SearchBar";
+import FormCust from "../../componens/FormCust";
 
 const LandingPage = () => {
   const [showForm, setShowForm] = useState(false);
@@ -25,14 +23,14 @@ const LandingPage = () => {
   ];
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <Helmet>
         <title>TemanTani</title>
       </Helmet>
 
       {/* Jumbotron Section */}
-      <section className="bg-white dark:bg-gray-900 bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')] relative">
-        <div className="absolute top-4 left-4 z-20"> {/* Pindahkan ke kiri atas */}
+      <section className="relative bg-cover bg-center bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')]">
+        <div className="absolute top-1 left-4 z-20">
           <SearchBar />
         </div>
         <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 z-10 relative">
@@ -47,7 +45,7 @@ const LandingPage = () => {
       </section>
 
       {/* Produk */}
-      <div className="flex flex-col items-center justify-start min-h-screen bg-white text-gray-800 text-center p-4 pt-16">
+      <div className="flex flex-col items-center justify-start bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 text-center p-4 pt-16">
         <h2 className="text-3xl font-bold mb-6">Produk Kami</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-screen-lg">

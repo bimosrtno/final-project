@@ -130,7 +130,7 @@ const TemplateManager = () => {
         return type === 'sls' ? 'Sales' : 'Customer';
     };
 
-    // Pagination Logic
+    // Pagination 
     const totalPagesSls = Math.ceil(templatesSls.length / itemsPerPage);
     const indexOfLastItemSls = currentPageSls * itemsPerPage;
     const indexOfFirstItemSls = indexOfLastItemSls - itemsPerPage;
@@ -143,8 +143,6 @@ const TemplateManager = () => {
 
     return (
         <div className="p-4">
-            <h2 className="text-lg font-bold mb-4">Kelola Template</h2>
-
             {!editingTemplate ? (
                 <TemplateForm 
                     onSubmit={handleTemplateSubmit}
@@ -160,8 +158,8 @@ const TemplateManager = () => {
             
             {/* Tabel untuk Sales Templates */}
             <div className="overflow-x-auto">
-                <table className="min-w-full mx-auto bg-white border border-gray-200 rounded-lg shadow-md">
-                    <thead>
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"> {/* Latar belakang tabel */}
+            <thead className="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-300 dark:text-gray-400"> {/* Warna latar belakang header dan teks */}
                         <tr>
                             <th className="py-2 border-b">Template</th>
                             <th className="py-2 border-b">Tipe</th>
@@ -171,7 +169,7 @@ const TemplateManager = () => {
                     </thead>
                     <tbody>
                         {currentSlsTemplates.map((template) => (
-                            <tr key={template.id}>
+                            <tr key={template.id} className="bg-gray-200 border-b text-gray-800 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">
                                 <td className="border-b py-2 text-center max-w-xs overflow-x-auto whitespace-nowrap">{template.template}</td>
                                 <td className="border-b py-2 text-center">{getTypeLabel(template.type)}</td>
                                 <td className="border-b py-2 text-center">
@@ -224,7 +222,7 @@ const TemplateManager = () => {
 
             {/* Tabel untuk Customer Templates */}
             <div className="overflow-x-auto mt-4">
-                <h3 className="text-lg font-bold mb-2">Customer Templates</h3>
+                <h3 className="text-lg font-bold mb-2 bg-white">Customer Templates</h3>
                 <table className="min-w-full mx-auto bg-white border border-gray-200 rounded-lg shadow-md">
                     <thead>
                         <tr>

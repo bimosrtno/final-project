@@ -4,17 +4,20 @@ import { Helmet } from 'react-helmet';
 import CustTabel from '../../componens/CustTabel';
 import AddCustomer from '../../componens/ButtonCustAdmin';
 import NavbarSales from '../../componens/NavbarSales'
-import '../../CSS/Bodyadmin.css';
+
 function CustomerPage() {
   return (
-    <div>
+    <div className="bg-gray-800 min-h-screen">
     <Helmet>
       <title>Admin Sales</title>
     </Helmet>
-    <div className='body.admin' >
+    <div>
       <NavbarSales/> 
-      <div className='mt-20'> {/* Tambahkan margin top 4 */}
+      <div className="container mx-auto mt-0 p-4"> {/* Container untuk padding */}
+      <p className="text-xl text-white font-bold mb-4 text-left">Tabel Customer</p> {/* Judul tabel */}
+        <div className="overflow-x-auto"> {/* Membuat tabel scrollable pada layar kecil */}
       <CustTabel /> 
+        </div>
       </div>
     </div>
     </div>

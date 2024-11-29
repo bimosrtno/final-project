@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../CSS/Sidebar.css';
 
 const Sidebar = () => {
   const [openMenus, setOpenMenus] = useState({
@@ -16,7 +15,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="fixed top-0 left-0 z-40 w-48 h-screen bg-gray-800 text-white p-4">
+    <aside className="fixed top-0 left-0 z-40 w-48 h-screen bg-gray-900 text-white p-4">
       <h2 className="text-xl font-bold mb-8">TemanTani</h2>
       
       <ul className="space-y-6">
@@ -77,7 +76,7 @@ const Sidebar = () => {
         <li>
           <button 
             className="flex items-center w-full text-left py-2 bg-transparent text-gray-300 hover:text-white focus:outline-none rounded-lg text-m px-5"
-            onClick={() => window.location.href = '/login'} // Menggunakan navigasi untuk Log Out
+            onClick={() => window.location.href = '/login'} // Navigate for Log Out
           >
             Log Out
           </button>

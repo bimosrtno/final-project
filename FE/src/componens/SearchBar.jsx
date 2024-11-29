@@ -6,23 +6,22 @@ function SearchBar() {
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    axios.get(`http://localhost:5000/api/sales?transactionId=${transactionId}`)
-      .then(response => {
-        if (response.data.length === 0) {
-          alert('Transaksi tidak ditemukan.');
-          setShowModal(false);  // Menutup modal jika tidak ada data
-        } else {
-          setSelectedTransaction(response.data[0]); // Ambil transaksi pertama
-          setShowModal(true); // Tampilkan modal
-          console.log("Data Transaksi:", response.data);
-        }
-      })
-      .catch(error => {
-        console.error("Ada masalah saat mencari transaksi:", error);
-        alert('Ada masalah saat mencari transaksi: ' + error.message);
-      });
+    try {
+      const response = await axios.get(`http://localhost:5000/api/sales?transactionId=${transactionId}`);
+      if (response.data.length === 0) {
+        alert('Transaksi tidak ditemukan.');
+        setShowModal(false);  // Menutup modal jika tidak ada data
+      } else {
+        setSelectedTransaction(response.data[0]); // Ambil transaksi pertama
+        setShowModal(true); // Tampilkan modal
+        console.log("Data Transaksi:", response.data);
+      }
+    } catch (error) {
+      console.error("Ada masalah saat mencari transaksi:", error);
+      alert('Ada masalah saat mencari transaksi: ' + error.message);
+    }
   };
 
   const handleCloseModal = () => {
@@ -64,13 +63,13 @@ function SearchBar() {
               onClick={handleCloseModal} 
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
             >
-              ✖️
+              &times; {/* Icon close button */}
             </button>
             <h2 className="text-lg font-bold">Detail Transaksi</h2>
             <p><strong>Nama Customer:</strong> {selectedTransaction.customer_name}</p>
-            <p><strong>Telepon:</strong> {selectedTransaction.phone}</p>
-            <p><strong>Alamat:</strong> {selectedTransaction.address}</p>
             <p><strong>Status:</strong> {selectedTransaction.status}</p>
+            <p><strong>Jasa Kirim:</strong> {selectedTransaction.pengiriman}</p>
+            <p><strong>No Resi:</strong> {selectedTransaction.no_resi}</p>
             <button 
               onClick={handleCloseModal} 
               className="mt-4 text-white bg-blue-500 hover:bg-blue-600 rounded-lg px-4 py-2"

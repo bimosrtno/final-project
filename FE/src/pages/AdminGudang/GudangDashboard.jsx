@@ -4,6 +4,7 @@ import axios from 'axios';
 import AddStock from '../../componens/AddStock'; // Pastikan path ini sesuai
 import InvenTable from '../../componens/InvenTabel'; // Pastikan path ini sesuai
 import NavbarInven from '../../componens/NavBarInven';
+
 function GudangDashboard() {
   const [inventories, setInventories] = useState([]);
 
@@ -21,18 +22,15 @@ function GudangDashboard() {
   }, []);
 
   return (
-    <div>
+    <div className="bg-gray-800 min-h-screen">
       <Helmet>
         <title>Admin Gudang</title>
       </Helmet>
-    <div className="body.admin">
       <NavbarInven />
-      <div className="mt-20"> {/* Tambahkan margin top 4 */}
-        <InvenTable inventories={inventories} /> {/* Pass data to InvenTable */}
+      <div className="mt-10 ml-20 "> {/* Menggunakan flex dan justify-end */}
+        <AddStock inventories={inventories} setInventories={setInventories} />
       </div>
-      <AddStock inventories={inventories} setInventories={setInventories} /> {/* Pass data to AddStock */}
-    </div>
-
+      <InvenTable inventories={inventories} /> {/* Pass data to InvenTable */}
     </div>
   );
 }

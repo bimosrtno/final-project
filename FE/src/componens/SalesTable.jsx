@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import '../CSS/table.css';
 import TransButton from "./TransButton";
 import CancelTransaction from "./CancelTrans";
 
@@ -8,8 +7,11 @@ const SalesTable = () => {
   const [note, setNote] = useState('');
   const [message, setMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-  const [activeTemplates, setActiveTemplates] = useState([]); // State untuk menyimpan template aktif
+  const [itemsPerPage] = useState(5);
+  const [activeTemplates, setActiveTemplates] = useState([]);
+  const [selectedSale, setSelectedSale] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchSalesData = async () => {
@@ -30,19 +32,19 @@ const SalesTable = () => {
         alert(error.message);
       }
     };
-    
+
     const fetchActiveTemplates = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/templates/sls/active'); // Endpoint untuk semua template aktif
+        const response = await fetch('http://localhost:5000/api/templates/sls/active');
         const templates = await response.json();
-        setActiveTemplates(templates); // Simpan template aktif
+        setActiveTemplates(templates);
       } catch (error) {
         console.error("Error fetching active templates:", error);
       }
     };
 
     fetchSalesData();
-    fetchActiveTemplates(); // Ambil template aktif
+    fetchActiveTemplates();
     const intervalId = setInterval(fetchSalesData, 5000);
     return () => clearInterval(intervalId);
   }, []);
@@ -91,49 +93,99 @@ const SalesTable = () => {
 
   const createWhatsAppLink = (phone, customerName, transactionId) => {
     const formattedPhone = formatPhoneNumber(phone);
-    const template = activeTemplates[0]; // Ambil template pertama yang aktif
+    const template = activeTemplates[0];
 
-    // Gantikan placeholder dengan nilai yang sesuai
     const message = template ? 
       template.template.replace(/\${name}/g, customerName).replace(/\${transactionId}/g, transactionId) :
-      ''; // Kosongkan pesan jika tidak ada template
+      '';
 
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
   };
 
+  const handleDetailClick = (sale) => {
+    setSelectedSale(sale);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedSale(null);
+  };
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = salesData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(salesData.length / itemsPerPage);
+  
+  const filteredSalesData = salesData.filter((sale) =>
+    sale.id_transaksi.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const currentItems = filteredSalesData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredSalesData.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  const getStatusClassName = (status) => {
+    switch (status) {
+      case "proses":
+        return "bg-yellow-600"; 
+      case "terkirim":
+        return "bg-green-500"; 
+      case "Batal":
+        return "bg-red-700"; 
+      default:
+        return ""; 
+    }
+  };
+
+  // Menambahkan fungsi formatRupiah
+  const formatRupiah = (amount) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   return (
     <div>
       {message && <p className="text-green-600">{message}</p>}
+
+      {/* Tombol di sebelah kiri dan search bar di sebelah kanan */}
+      <div className="flex items-center mb-2">
+        <div className="flex space-x-2 mr-3">
+          <TransButton className="h-5" /> {/* Menyusun tinggi tombol */}
+          <CancelTransaction className="h-5" /> {/* Menyusun tinggi tombol */}
+        </div>
+        <input
+          type="text"
+          placeholder="Cari ID Transaksi..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="px-2 py-1 border border-gray-300 rounded w-3/4 h-10 mb-1" // Menetapkan tinggi search bar
+        />
+      </div>
+
       <div className="table-wrapper relative overflow-x-auto flex justify-center w-full">
-        <table className="table-auto w-full mx-auto text-left text-sm text-gray-500">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"> {/* Latar belakang tabel */}
+      <thead className="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-300 dark:text-gray-400"> {/* Warna latar belakang header dan teks */}
             <tr>
+              <th scope="col" className="px-2 py-1">Tanggal</th>
               <th scope="col" className="px-2 py-1 w-60">ID Transaksi</th>
               <th scope="col" className="px-2 py-1 w-60">Nama Customer</th>
-              <th scope="col" className="px-2 py-1 w-60">Nama Product</th>
               <th scope="col" className="px-2 py-1">Nomor</th>
-              <th scope="col" className="px-2 py-1 w-60">Alamat</th>
-              <th scope="col" className="px-2 py-1">Jumlah</th>
-              <th scope="col" className="px-2 py-1">Total</th>
-              <th scope="col" className="px-2 py-1">Tanggal</th>
               <th scope="col" className="px-2 py-1">Status</th>
+              <th scope="col" className="px-2 py-1">Detail</th>
             </tr>
           </thead>
           <tbody>
             {currentItems.map((sale) => (
-              <tr key={sale.id_transaksi} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr key={sale.id_transaksi} className="bg-gray-200 border-b text-gray-800 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">
+                <td className="px-2 py-3">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
                 <td className="px-2 py-3">{sale.id_transaksi}</td>
                 <td className="px-2 py-3 w-80">{sale.customer_name}</td>
-                <td className="px-2 py-3 w-80">{sale.nama_produk.join(", ")}</td>
                 <td className="px-2 py-3">
                   <a
                     href={createWhatsAppLink(sale.phone, sale.customer_name, sale.id_transaksi)}
@@ -144,11 +196,21 @@ const SalesTable = () => {
                     {sale.phone}
                   </a>
                 </td>
-                <td className="px-2 py-3 w-80">{sale.address}</td>
-                <td className="px-2 py-3">{sale.quantity.join(", ")}</td>
-                <td className="px-2 py-3">{sale.total_transaksi}</td>
-                <td className="px-2 py-3">{new Date(sale.date).toLocaleDateString('id-ID')}</td>
-                <td className="px-2 py-3">{sale.status}</td>
+                <td className="px-2 py-3">
+                  <button
+                    disabled
+                    className={`text-white focus:ring-4 font-medium rounded-lg text-m px-5 py-2.5 me-2 mb-2 ${getStatusClassName(sale.status)}`}
+                  >
+                    {sale.status}
+                  </button>
+                </td>
+                <td className="px-2 py-3">
+                  <button
+                    onClick={() => handleDetailClick(sale)}
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                    Detail
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -156,11 +218,6 @@ const SalesTable = () => {
       </div>
 
       <div className="flex justify-between items-center px-4 py-2">
-        <div className="flex space-x-2">
-          <TransButton />
-          <CancelTransaction />
-        </div>
-
         <nav aria-label="Page navigation example">
           <ul className="inline-flex -space-x-px text-sm">
             <li>
@@ -194,6 +251,28 @@ const SalesTable = () => {
           </ul>
         </nav>
       </div>
+
+      {/* Modal untuk detail transaksi */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-gray-500 bg-opacity-50">
+          <div className="bg-white rounded p-4 shadow-md max-w-md w-full">
+            <h2 className="text-lg font-semibold mb-2">Detail Transaksi</h2>
+            {selectedSale && (
+              <div>
+                <p><strong>ID Transaksi:</strong> {selectedSale.id_transaksi}</p>
+                <p><strong>Nama Customer:</strong> {selectedSale.customer_name}</p>
+                <p><strong>Nomor Telepon:</strong> {selectedSale.phone}</p>
+                <p><strong>Alamat:</strong> {selectedSale.address}</p>
+                <p><strong>Produk:</strong> {selectedSale.nama_produk.join(", ")}</p>
+                <p><strong>Jumlah:</strong> {selectedSale.quantity.join(", ")}</p>
+                <p><strong>Total:</strong> {formatRupiah(selectedSale.total_transaksi)}</p>
+                <p><strong>Status:</strong> {selectedSale.status}</p>
+              </div>
+            )}
+            <button onClick={handleCloseModal} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded">Tutup</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

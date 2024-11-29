@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../CSS/table.css"; // Impor file CSS
 import AddCustomer from "./ButtonCustAdmin";
 
 const PAGE_SIZE = 5; // Jumlah pelanggan yang ditampilkan per halaman
@@ -85,7 +84,7 @@ const CustData = () => {
     <div className="flex justify-center py-4">
       <div className="relative overflow-x-auto w-full">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-300 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">ID</th>
               <th scope="col" className="px-6 py-3">Nama</th>
@@ -97,7 +96,7 @@ const CustData = () => {
           </thead>
           <tbody>
             {currentCustomers.map((customer) => (
-              <tr key={customer.id_customer} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr key={customer.id_customer} className="bg-gray-200 border-b text-gray-800 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">
                 <td className="px-6 py-4">{customer.id_customer}</td>
                 <td className="px-6 py-4">{customer.Name}</td>
                 <td className="px-6 py-4">
@@ -142,8 +141,8 @@ const CustData = () => {
               <p className="mb-2"><strong>Email:</strong> {selectedCustomer.Email}</p>
               <p className="mb-2"><strong>Perusahaan:</strong> {selectedCustomer.Company}</p>
               <p className="mb-2"><strong>Domisili:</strong> {selectedCustomer.City}</p>
-              <p className="mb-2"><strong>Total Transaksi:</strong> {formatCurrency(totalTransactions)}</p>
               {/* Menampilkan total transaksi dengan format rupiah */}
+              <p className="mb-2"><strong>Total Transaksi:</strong> {formatCurrency(totalTransactions)}</p>
             </div>
           )}
         </div>
@@ -158,7 +157,7 @@ const CustData = () => {
               <button
                 key={index + 1}
                 onClick={() => handlePageChange(index + 1)}
-                className={`mx-1 px-4 py-2 border rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 hover:bg-blue-100'}`}
+                className={`mx-1 px-4 py-2 border rounded ${currentPage === index + 1 ? 'bg-gray-500 text-white' : 'bg-gray-500 text-white hover:bg-gray-500'}`}
               >
                 {index + 1}
               </button>

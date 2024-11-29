@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../CSS/table.css"; // Impor file CSS
 import AddCustomer from "./ButtonCustAdmin";
 
 const PAGE_SIZE = 5; // Jumlah pelanggan yang ditampilkan per halaman
@@ -85,24 +84,23 @@ const CustomerTable = () => {
   };
 
   return (
-    <div className="flex justify-center py-4">
-      <div className="relative overflow-x-auto w-full">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <div className="relative overflow-x-auto">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"> {/* Latar belakang tabel */}
+      <thead className="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-300 dark:text-gray-400"> {/* Warna latar belakang header dan teks */}
             <tr>
-              <th scope="col" className="px-6 py-3">Customer ID</th> {/* Kolom ID Customer */}
-              <th scope="col" className="px-6 py-3">Nama</th>
-              <th scope="col" className="px-6 py-3">Nomor</th>
-              <th scope="col" className="px-6 py-3">Email</th>
-              <th scope="col" className="px-6 py-3">Perusahaan</th>
-              <th scope="col" className="px-6 py-3">Domisili</th>
-              <th scope="col" className="px-6 py-3">Source</th>
-              <th scope="col" className="px-6 py-3">Status</th>
+              <th scope="col" className="px-4 py-3">Customer ID</th> {/* Kolom ID Customer */}
+              <th scope="col" className="px-4 py-3">Nama</th>
+              <th scope="col" className="px-4 py-3">Nomor</th>
+              <th scope="col" className="px-4 py-3">Email</th>
+              <th scope="col" className="px-4 py-3">Perusahaan</th>
+              <th scope="col" className="px-4 py-3">Domisili</th>
+              <th scope="col" className="px-4 py-3">Source</th>
+              <th scope="col" className="px-4 py-3">Status</th>
             </tr>
           </thead>
           <tbody>
             {currentCustomers.map((customer) => (
-              <tr key={customer.Name} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <tr key={customer.Name} className="bg-gray-200 border-b text-gray-800 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">
                 <td className="px-6 py-4">{customer.id_customer}</td> {/* Menampilkan ID Customer */}
                 <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{customer.Name}</td>
                 <td className="px-6 py-4">
@@ -120,29 +118,33 @@ const CustomerTable = () => {
                 <td className="px-6 py-4">{customer.City}</td>
                 <td className="px-6 py-4">{customer.source}</td>
                 <td className="px-6 py-4">
-                  <select
-                    value={customer.Status || "potensial"}
-                    onChange={(e) => handleStatusChange(customer.Name, e.target.value)}
-                    className="block p-2 rounded border-gray-300"
-                  >
-                    <option value="active">Active</option>
-                    <option value="potensial">Potensial</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
+                <select
+    value={customer.Status || "potensial"}
+    onChange={(e) => handleStatusChange(customer.Name, e.target.value)}
+    className={`block p-2 rounded focus:outline-none 
+      ${customer.Status === 'active' ? 'bg-green-400 text-white font-medium rounded-lg px-4 py-2' 
+      : customer.Status === 'potensial' ? 'bg-yellow-400 text-white font-medium rounded-lg px-4 py-2' 
+      : 'bg-red-800 text-white font-medium rounded-lg px-4 py-2'} 
+      focus:bg-gray-300`} // Tambahkan warna latar belakang saat dropdown aktif
+  >
+    <option value="active" className="text-gray-800">Active</option>
+    <option value="potensial" className="text-gray-800">Potensial</option>
+    <option value="inactive" className="text-gray-800">Inactive</option>
+  </select>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
         
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-between items-center mt-2">
           <AddCustomer />
           <div className="flex justify-center w-full">
             {Array.from({ length: totalPages }, (_, index) => (
               <button
                 key={index + 1}
                 onClick={() => handlePageChange(index + 1)}
-                className={`mx-1 px-4 py-2 border rounded ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 hover:bg-blue-100'}`}
+                className={`mx-1 px-4 py-2 border rounded ${currentPage === index + 1 ? 'bg-gray-300 text-white' : 'bg-gray-400 text-white hover:bg-gray-100'}`}
               >
                 {index + 1}
               </button>
@@ -150,7 +152,7 @@ const CustomerTable = () => {
           </div>
         </div>
       </div>
-    </div>
+
   );
 };
 

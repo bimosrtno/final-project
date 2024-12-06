@@ -19,6 +19,7 @@ const salesRouter = require('./Routes/Sales'); // Rute untuk sales
 const inventorisRouter = require('./Routes/Inventoris'); // Rute untuk inventoris
 const chartRouter = require('./Routes/Chart'); // Rute untuk chart
 const templateRouter = require('./Routes/Template'); // Rute untuk template
+const adminRoutes = require('./Routes/Admin');
 
 // Mengatur rute
 app.use('/api/auth', authRouter); // Rute untuk autentikasi
@@ -27,6 +28,8 @@ app.use('/api/sales', salesRouter); // Rute untuk sales
 app.use('/api/inventoris', inventorisRouter); // Rute untuk inventoris
 app.use('/api/chart', chartRouter); // Rute untuk chart
 app.use('/api/templates', templateRouter); // Rute untuk template
+app.use('/api/admin', adminRoutes);
+
 
 // Penanganan kesalahan
 app.use((err, req, res, next) => {
